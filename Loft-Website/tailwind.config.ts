@@ -9,12 +9,15 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        'loft-green': '#1B4D3E',
-        'loft-off-white': '#F5F5F0',
+        'loft-green': '#1D4E2B',
+        'loft-off-white': '#F0EAD8',
+        'loft-olive-green': '#546B3B',
+        'loft-black': '#1A1A1A',
+        'loft-tan': '#B08D57',
       },
       fontFamily: {
-        playfair: ['var(--font-playfair)', 'Georgia', 'serif'],
-        inter: ['var(--font-inter)', 'system-ui', '-apple-system', 'sans-serif'],
+        gilda: ['var(--font-gilda)'],
+        optima: ['var(--font-optima)'],
       },
     },
   },

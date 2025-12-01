@@ -3,10 +3,15 @@
 @tailwind utilities;
 
 :root {
-  --loft-green: #1B4D3E;
-  --loft-off-white: #F5F5F0;
-  --loft-green-light: #2d6b58;
-  --loft-green-dark: #0f3328;
+  --loft-green: #1D4E2B;
+  --loft-off-white: #F0EAD8;
+  --loft-olive-green: #546B3B;
+  --loft-black: #1A1A1A;
+  --loft-tan: #B08D57;
+  --loft-green-light: #546B3B;
+  --loft-green-dark: #1D4E2B;
+  --font-gilda: 'Gilda Display', 'Gilda Display Caps', Georgia, serif;
+  --font-optima: 'Optima', 'Candara', 'Calibri', system-ui, -apple-system, sans-serif;
 }
 
 * {
@@ -19,15 +24,16 @@ html,
 body {
   max-width: 100vw;
   overflow-x: hidden;
-  font-family: var(--font-inter), system-ui, -apple-system, sans-serif;
+  font-family: var(--font-optima);
   color: var(--loft-green);
   background-color: var(--loft-off-white);
 }
 
 h1, h2, h3, h4, h5, h6 {
-  font-family: var(--font-playfair), Georgia, serif;
-  font-weight: 600;
+  font-family: var(--font-gilda);
+  font-weight: 400;
   line-height: 1.2;
+  text-transform: uppercase;
 }
 
 a {
