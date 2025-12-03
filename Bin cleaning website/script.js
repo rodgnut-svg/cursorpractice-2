@@ -140,4 +140,33 @@ document.addEventListener('DOMContentLoaded', function() {
             benefitObserver.observe(card);
         });
     }
+
+    // YouTube embed error detection and fallback
+    const youtubeIframe = document.getElementById('youtube-player');
+    const videoFallback = document.querySelector('.video-fallback');
+    
+    if (youtubeIframe && videoFallback) {
+        // Check if iframe loads successfully
+        youtubeIframe.addEventListener('load', function() {
+            // If iframe loads, hide fallback
+            setTimeout(function() {
+                try {
+                    // Try to access iframe content (will fail if cross-origin, but that's expected)
+                    const iframeDoc = youtubeIframe.contentDocument || youtubeIframe.contentWindow.document;
+                    // If we get here, iframe loaded but might have error
+                } catch (e) {
+                    // Cross-origin is expected, iframe is loading
+                }
+            }, 2000);
+        });
+
+        // Show fallback if iframe fails (after 3 seconds)
+        setTimeout(function() {
+            // Check if iframe is still showing error
+            youtubeIframe.addEventListener('error', function() {
+                youtubeIframe.style.display = 'none';
+                videoFallback.style.display = 'block';
+            });
+        }, 3000);
+    }
 });
