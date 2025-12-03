@@ -146,10 +146,17 @@ document.addEventListener('DOMContentLoaded', function() {
     const navMenu = document.getElementById('nav-menu');
     
     if (mobileMenuToggle && navMenu) {
+        console.log('Mobile menu elements found:', mobileMenuToggle, navMenu);
+        
         mobileMenuToggle.addEventListener('click', function(e) {
+            e.preventDefault();
             e.stopPropagation();
+            console.log('Menu toggle clicked');
+            
             navMenu.classList.toggle('active');
             mobileMenuToggle.classList.toggle('active');
+            
+            console.log('Menu active state:', navMenu.classList.contains('active'));
             
             // Prevent body scroll when menu is open
             if (navMenu.classList.contains('active')) {
@@ -180,5 +187,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 document.body.style.overflow = '';
             }
         });
+    } else {
+        console.error('Mobile menu elements not found:', { mobileMenuToggle, navMenu });
     }
 });
