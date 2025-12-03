@@ -144,6 +144,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Mobile menu toggle
     const mobileMenuToggle = document.getElementById('mobile-menu-toggle');
     const navMenu = document.getElementById('nav-menu');
+    const menuBackdrop = document.getElementById('menu-backdrop');
     
     if (mobileMenuToggle && navMenu) {
         console.log('Mobile menu elements found:', mobileMenuToggle, navMenu);
@@ -155,6 +156,9 @@ document.addEventListener('DOMContentLoaded', function() {
             
             navMenu.classList.toggle('active');
             mobileMenuToggle.classList.toggle('active');
+            if (menuBackdrop) {
+                menuBackdrop.classList.toggle('active');
+            }
             
             console.log('Menu active state:', navMenu.classList.contains('active'));
             
@@ -172,9 +176,22 @@ document.addEventListener('DOMContentLoaded', function() {
             link.addEventListener('click', function() {
                 navMenu.classList.remove('active');
                 mobileMenuToggle.classList.remove('active');
+                if (menuBackdrop) {
+                    menuBackdrop.classList.remove('active');
+                }
                 document.body.style.overflow = '';
             });
         });
+
+        // Close menu when clicking backdrop
+        if (menuBackdrop) {
+            menuBackdrop.addEventListener('click', function() {
+                navMenu.classList.remove('active');
+                mobileMenuToggle.classList.remove('active');
+                menuBackdrop.classList.remove('active');
+                document.body.style.overflow = '';
+            });
+        }
 
         // Close menu when clicking outside
         document.addEventListener('click', function(event) {
@@ -184,6 +201,9 @@ document.addEventListener('DOMContentLoaded', function() {
             if (!isClickInsideNav && !isClickOnToggle && navMenu.classList.contains('active')) {
                 navMenu.classList.remove('active');
                 mobileMenuToggle.classList.remove('active');
+                if (menuBackdrop) {
+                    menuBackdrop.classList.remove('active');
+                }
                 document.body.style.overflow = '';
             }
         });
