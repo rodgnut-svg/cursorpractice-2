@@ -141,32 +141,34 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // YouTube embed error detection and fallback
-    const youtubeIframe = document.getElementById('youtube-player');
-    const videoFallback = document.querySelector('.video-fallback');
+    // Mobile menu toggle
+    const mobileMenuToggle = document.getElementById('mobile-menu-toggle');
+    const navMenu = document.getElementById('nav-menu');
     
-    if (youtubeIframe && videoFallback) {
-        // Check if iframe loads successfully
-        youtubeIframe.addEventListener('load', function() {
-            // If iframe loads, hide fallback
-            setTimeout(function() {
-                try {
-                    // Try to access iframe content (will fail if cross-origin, but that's expected)
-                    const iframeDoc = youtubeIframe.contentDocument || youtubeIframe.contentWindow.document;
-                    // If we get here, iframe loaded but might have error
-                } catch (e) {
-                    // Cross-origin is expected, iframe is loading
-                }
-            }, 2000);
+    if (mobileMenuToggle && navMenu) {
+        mobileMenuToggle.addEventListener('click', function() {
+            navMenu.classList.toggle('active');
+            mobileMenuToggle.classList.toggle('active');
         });
 
-        // Show fallback if iframe fails (after 3 seconds)
-        setTimeout(function() {
-            // Check if iframe is still showing error
-            youtubeIframe.addEventListener('error', function() {
-                youtubeIframe.style.display = 'none';
-                videoFallback.style.display = 'block';
+        // Close menu when clicking on a link
+        const navLinks = navMenu.querySelectorAll('.nav-link');
+        navLinks.forEach(link => {
+            link.addEventListener('click', function() {
+                navMenu.classList.remove('active');
+                mobileMenuToggle.classList.remove('active');
             });
-        }, 3000);
+        });
+
+        // Close menu when clicking outside
+        document.addEventListener('click', function(event) {
+            const isClickInsideNav = navMenu.contains(event.target);
+            const isClickOnToggle = mobileMenuToggle.contains(event.target);
+            
+            if (!isClickInsideNav && !isClickOnToggle && navMenu.classList.contains('active')) {
+                navMenu.classList.remove('active');
+                mobileMenuToggle.classList.remove('active');
+            }
+        });
     }
 });
