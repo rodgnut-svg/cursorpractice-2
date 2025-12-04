@@ -4,16 +4,6 @@
 
 @layer base {
   :root {
-    --loft-green: #1D4E2B;
-    --loft-off-white: #F0EAD8;
-    --loft-olive-green: #546B3B;
-    --loft-black: #1A1A1A;
-    --loft-tan: #B08D57;
-    --loft-green-light: #546B3B;
-    --loft-green-dark: #1D4E2B;
-    --font-gilda: 'Gilda Display', 'Gilda Display Caps', Georgia, serif;
-    --font-optima: 'Optima', 'Candara', 'Calibri', system-ui, -apple-system, sans-serif;
-    
     --background: 0 0% 100%;
     --foreground: 222.2 84% 4.9%;
     --card: 0 0% 100%;
@@ -67,42 +57,3 @@
     @apply bg-background text-foreground;
   }
 }
-
-* {
-  box-sizing: border-box;
-  padding: 0;
-  margin: 0;
-}
-
-html,
-body {
-  max-width: 100vw;
-  overflow-x: hidden;
-  font-family: var(--font-optima);
-  color: var(--loft-green);
-  background-color: var(--loft-off-white);
-}
-
-h1, h2, h3, h4, h5, h6 {
-  font-family: var(--font-gilda);
-  font-weight: 400;
-  line-height: 1.2;
-  text-transform: uppercase;
-}
-
-a {
-  color: inherit;
-  text-decoration: none;
-}
-
-button {
-  font-family: inherit;
-  cursor: pointer;
-}
-
-button:focus-visible,
-a:focus-visible {
-  outline: 2px solid var(--loft-off-white);
-  outline-offset: 2px;
-}
-
