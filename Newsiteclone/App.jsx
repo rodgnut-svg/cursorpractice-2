@@ -1461,21 +1461,35 @@ const Hero = () => {
  */
 const RiskEcosystem = () => {
     const containerRef = useRef(null);
-    const sceneRef = useRef(null);
-    const rendererRef = useRef(null);
-    const cameraRef = useRef(null);
+    const orbitGroupRef = useRef(null);
     const nodesRef = useRef([]);
-    const connectionsRef = useRef([]);
-    const coreRef = useRef(null);
-    const nodeGroupRef = useRef(null);
-    const raycasterRef = useRef(null);
-    const mouseRef = useRef({ x: 0, y: 0 });
-    const hoveredNodeRef = useRef(null);
     const rotationRef = useRef(0);
     const [selectedNode, setSelectedNode] = useState(null);
     const [hoveredNodeIndex, setHoveredNodeIndex] = useState(null);
     const [isMobile, setIsMobile] = useState(false);
     const animationFrameRef = useRef(null);
+
+    // Premium monochrome refined color scheme
+    const colorScheme = {
+        nodeGradients: [
+            'radial-gradient(circle at 30% 30%, #1e293b 0%, #0f172a 50%, #020617 100%)',
+            'radial-gradient(circle at 30% 30%, #1e293b 0%, #0f172a 50%, #020617 100%)',
+            'radial-gradient(circle at 30% 30%, #1e293b 0%, #0f172a 50%, #020617 100%)',
+            'radial-gradient(circle at 30% 30%, #1e293b 0%, #0f172a 50%, #020617 100%)',
+            'radial-gradient(circle at 30% 30%, #1e293b 0%, #0f172a 50%, #020617 100%)',
+            'radial-gradient(circle at 30% 30%, #1e293b 0%, #0f172a 50%, #020617 100%)',
+            'radial-gradient(circle at 30% 30%, #1e293b 0%, #0f172a 50%, #020617 100%)',
+            'radial-gradient(circle at 30% 30%, #1e293b 0%, #0f172a 50%, #020617 100%)'
+        ],
+        nodeBorder: 'rgba(94, 234, 212, 0.3)', // Cool cyan accent border
+        nodeShadow: '0 2px 12px rgba(0, 0, 0, 0.4), 0 0 24px rgba(0, 0, 0, 0.2)',
+        nodeShadowHover: '0 4px 20px rgba(94, 234, 212, 0.25), 0 0 40px rgba(94, 234, 212, 0.15)',
+        orbitRingColor: 'rgba(94, 234, 212, 0.08)',
+        textColor: '#f8fafc', // Near-white for better contrast
+        labelBg: 'rgba(15, 23, 42, 0.95)',
+        labelBorder: 'rgba(94, 234, 212, 0.2)',
+        centerLabelGlow: '0 0 20px rgba(94, 234, 212, 0.15), 0 0 40px rgba(94, 234, 212, 0.08)'
+    };
 
     const iconSVG = (type) => {
         const icons = {
@@ -1523,241 +1537,238 @@ const RiskEcosystem = () => {
         return () => window.removeEventListener('resize', checkMobile);
     }, []);
 
-    // Initialize Three.js scene
+    // Initialize pure 2D CSS transform system
     useEffect(() => {
         if (!containerRef.current || isMobile) return;
 
         const container = containerRef.current;
         const width = container.clientWidth;
         const height = Math.min(container.clientHeight || 800, 800);
+        const centerX = width / 2;
+        const centerY = height / 2;
+        const nodeRadius = 320; // Orbit radius for nodes
 
-        // Scene setup
-        const scene = new THREE.Scene();
-        scene.background = null;
-        sceneRef.current = scene;
+        // Create orbit group container (for rotation) - pure 2D CSS
+        const orbitGroup = document.createElement('div');
+        orbitGroup.style.position = 'absolute';
+        orbitGroup.style.left = '50%';
+        orbitGroup.style.top = '50%';
+        orbitGroup.style.width = '1px';
+        orbitGroup.style.height = '1px';
+        orbitGroup.style.transformOrigin = '0 0';
+        container.appendChild(orbitGroup);
+        orbitGroupRef.current = orbitGroup;
 
-        // Camera setup
-        const camera = new THREE.PerspectiveCamera(50, width / height, 0.1, 2000);
-        camera.position.set(0, 0, 600);
-        cameraRef.current = camera;
+        // Use monochrome refined color scheme
+        const scheme = colorScheme; // colorScheme is the monochrome color scheme object
 
-        // Renderer setup
-        const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-        renderer.setSize(width, height);
-        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-        container.appendChild(renderer.domElement);
-        rendererRef.current = renderer;
+        // Orbit ring removed per user request
 
-        // Lights
-        const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
-        scene.add(ambientLight);
-        const pointLight = new THREE.PointLight(0xffffff, 0.8);
-        pointLight.position.set(0, 0, 500);
-        scene.add(pointLight);
-
-        // Raycaster for hover detection
-        const raycaster = new THREE.Raycaster();
-        raycasterRef.current = raycaster;
-
-        // Create central core
-        const coreGeometry = new THREE.CircleGeometry(80, 32);
-        const coreMaterial = new THREE.MeshStandardMaterial({
-            color: 0xffffff,
-            emissive: 0x444444,
-            transparent: true,
-            opacity: 0.1,
-            side: THREE.DoubleSide,
-        });
-        const core = new THREE.Mesh(coreGeometry, coreMaterial);
-        core.rotation.x = -Math.PI / 2;
-        scene.add(core);
-        coreRef.current = core;
-
-        // Core pulsing animation
-        let pulsePhase = 0;
-        const pulseCore = () => {
-            pulsePhase += 0.02;
-            coreMaterial.emissive.setHex(Math.floor(0x444444 + Math.sin(pulsePhase) * 0x222222));
-        };
-
-        // Node group for rotation
-        const nodeGroup = new THREE.Group();
-        scene.add(nodeGroup);
-        nodeGroupRef.current = nodeGroup;
-
-        // Create nodes
-        const nodeRadius = 250;
+        // Create nodes array for tracking
         const nodes = [];
-        const nodeMeshes = [];
+        const nodeElements = [];
+        const nodeLabels = [];
 
         features.forEach((feature, index) => {
+            // Calculate initial position in circle
             const angle = (index * Math.PI * 2) / 8;
-            const x = Math.cos(angle) * nodeRadius;
-            const z = Math.sin(angle) * nodeRadius;
-            const y = Math.sin(index * 0.5) * 30; // Slight vertical variation
+            const initialX = Math.cos(angle) * nodeRadius;
+            const initialY = Math.sin(angle) * nodeRadius;
 
-            // Node sphere
-            const nodeGeometry = new THREE.SphereGeometry(25, 16, 16);
-            const nodeMaterial = new THREE.MeshStandardMaterial({
-                color: 0xffffff,
-                emissive: 0x333333,
-                transparent: true,
-                opacity: 0.8,
-            });
-            const nodeMesh = new THREE.Mesh(nodeGeometry, nodeMaterial);
-            nodeMesh.position.set(x, y, z);
-            nodeMesh.userData = { featureIndex: index, baseScale: 1 };
-            nodeGroup.add(nodeMesh);
-            nodeMeshes.push(nodeMesh);
-            nodes.push({ mesh: nodeMesh, feature: feature, index });
+            // Create node element - premium clean styling
+            const nodeElement = document.createElement('div');
+            nodeElement.className = 'orbit-node';
+            nodeElement.style.position = 'absolute';
+            nodeElement.style.width = '120px';
+            nodeElement.style.height = '120px';
+            nodeElement.style.borderRadius = '50%';
+            nodeElement.style.background = scheme.nodeGradients[index % scheme.nodeGradients.length];
+            nodeElement.style.boxShadow = scheme.nodeShadow;
+            nodeElement.style.transform = `translate3d(${initialX}px, ${initialY}px, 0) translate(-50%, -50%)`;
+            nodeElement.style.cursor = 'pointer';
+            nodeElement.style.display = 'flex';
+            nodeElement.style.alignItems = 'center';
+            nodeElement.style.justifyContent = 'center';
+            nodeElement.style.padding = '0.5rem';
+            nodeElement.style.overflow = 'visible';
+            nodeElement.style.border = `1px solid ${scheme.nodeBorder}`;
+            nodeElement.dataset.nodeIndex = index;
+            nodeElement.dataset.shadowHover = scheme.nodeShadowHover;
+            nodeElement.dataset.shadowNormal = scheme.nodeShadow;
+            
+            // Create text element that will counter-rotate to stay upright
+            const textElement = document.createElement('span');
+            textElement.textContent = feature.shortTitle;
+            textElement.style.color = scheme.textColor;
+            textElement.style.fontSize = '0.875rem';
+            textElement.style.fontWeight = '600';
+            textElement.style.textAlign = 'center';
+            textElement.style.lineHeight = '1.3';
+            textElement.style.wordWrap = 'break-word';
+            textElement.style.display = 'block';
+            textElement.style.transformOrigin = 'center center';
+            textElement.style.letterSpacing = '0.02em';
+            textElement.style.textShadow = '0 1px 2px rgba(0, 0, 0, 0.6)';
+            textElement.style.pointerEvents = 'none';
+            nodeElement.appendChild(textElement);
+            
+            orbitGroup.appendChild(nodeElement);
+            nodeElements.push(nodeElement);
+
+            // Create HTML label for node - enhanced minimalist styling
+            const label = document.createElement('div');
+            label.className = 'risk-ecosystem-node-label';
+            label.textContent = feature.shortTitle;
+            label.style.position = 'absolute';
+            label.style.pointerEvents = 'none';
+            label.style.color = scheme.textColor;
+            label.style.fontSize = '0.95rem';
+            label.style.fontWeight = '600';
+            label.style.textAlign = 'center';
+            label.style.whiteSpace = 'nowrap';
+            label.style.opacity = '0';
+            label.style.display = 'none';
+            label.style.background = scheme.labelBg;
+            label.style.padding = '0.4rem 0.8rem';
+            label.style.borderRadius = '8px';
+            label.style.backdropFilter = 'blur(10px)';
+            label.style.border = `1px solid ${scheme.labelBorder}`;
+            label.style.textShadow = '0 1px 3px rgba(0, 0, 0, 0.9)';
+            label.style.transform = 'translate(-50%, -50%)';
+            label.style.zIndex = '20';
+            label.style.transition = 'opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1)';
+            label.style.letterSpacing = '0.025em';
+            container.appendChild(label);
+            nodeLabels.push({ element: label, nodeIndex: index, initialX, initialY });
+
+            nodes.push({ element: nodeElement, feature: feature, index, initialX, initialY });
         });
         nodesRef.current = nodes;
 
-        // Create connection lines
-        const connections = [];
-        relationships.forEach(([fromIdx, toIdx]) => {
-            const fromNode = nodes[fromIdx];
-            const toNode = nodes[toIdx];
-            if (!fromNode || !toNode) return;
-
-            const geometry = new THREE.BufferGeometry().setFromPoints([
-                new THREE.Vector3(fromNode.mesh.position.x, fromNode.mesh.position.y, fromNode.mesh.position.z),
-                new THREE.Vector3(toNode.mesh.position.x, toNode.mesh.position.y, toNode.mesh.position.z),
-            ]);
-
-            const material = new THREE.LineBasicMaterial({
-                color: 0xffffff,
-                transparent: true,
-                opacity: 0,
-                linewidth: 1,
-            });
-
-            const line = new THREE.Line(geometry, material);
-            line.userData = { fromIdx, toIdx };
-            nodeGroup.add(line);
-            connections.push(line);
-        });
-        connectionsRef.current = connections;
-
-        // Mouse move handler
+        // Mouse move handler for hover detection - pure 2D with throttling
+        let lastMouseMoveTime = 0;
         const handleMouseMove = (event) => {
+            const now = performance.now();
+            // Throttle to ~60fps to avoid conflicts with animation loop
+            if (now - lastMouseMoveTime < 16) return;
+            lastMouseMoveTime = now;
+
             const rect = container.getBoundingClientRect();
-            mouseRef.current.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
-            mouseRef.current.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
+            const mouseX = event.clientX - rect.left;
+            const mouseY = event.clientY - rect.top;
+
+            // Check which node is hovered (simple distance check)
+            let hoveredIndex = null;
+            nodes.forEach((node) => {
+                const nodeRect = node.element.getBoundingClientRect();
+                const nodeCenterX = nodeRect.left + nodeRect.width / 2 - rect.left;
+                const nodeCenterY = nodeRect.top + nodeRect.height / 2 - rect.top;
+                const distance = Math.sqrt(
+                    Math.pow(mouseX - nodeCenterX, 2) + Math.pow(mouseY - nodeCenterY, 2)
+                );
+                if (distance < 60) {
+                    hoveredIndex = node.index;
+                }
+            });
+            setHoveredNodeIndex(hoveredIndex);
         };
 
-        // Click handler
-        const handleClick = () => {
-            raycaster.setFromCamera(mouseRef.current, camera);
-            const intersects = raycaster.intersectObjects(nodeMeshes);
-            if (intersects.length > 0) {
-                const clickedNode = intersects[0].object.userData.featureIndex;
-                setSelectedNode(features[clickedNode]);
-            }
+        // Click handler - pure 2D
+        const handleClick = (event) => {
+            const rect = container.getBoundingClientRect();
+            const mouseX = event.clientX - rect.left;
+            const mouseY = event.clientY - rect.top;
+
+            nodes.forEach((node) => {
+                const nodeRect = node.element.getBoundingClientRect();
+                const nodeCenterX = nodeRect.left + nodeRect.width / 2 - rect.left;
+                const nodeCenterY = nodeRect.top + nodeRect.height / 2 - rect.top;
+                const distance = Math.sqrt(
+                    Math.pow(mouseX - nodeCenterX, 2) + Math.pow(mouseY - nodeCenterY, 2)
+                );
+                if (distance < 60) {
+                    setSelectedNode(node.feature);
+                }
+            });
         };
 
         container.addEventListener('mousemove', handleMouseMove);
         container.addEventListener('click', handleClick);
 
-        // Animation loop
+        // Pure 2D animation loop - only rotateZ (clockwise)
         const animate = () => {
             animationFrameRef.current = requestAnimationFrame(animate);
 
-            // Rotate node group
-            rotationRef.current += 0.001;
-            nodeGroup.rotation.y = rotationRef.current;
+            // Clockwise rotation (negative for clockwise) - pure 2D rotateZ only
+            rotationRef.current -= 0.001;
+            const rotationDeg = (rotationRef.current * 180) / Math.PI;
 
-            // Update connection line positions (they rotate with nodes)
-            connections.forEach((line) => {
-                const fromIdx = line.userData.fromIdx;
-                const toIdx = line.userData.toIdx;
-                const fromNode = nodes[fromIdx];
-                const toNode = nodes[toIdx];
-                if (fromNode && toNode) {
-                    const positions = line.geometry.attributes.position;
-                    positions.setXYZ(0, fromNode.mesh.position.x, fromNode.mesh.position.y, fromNode.mesh.position.z);
-                    positions.setXYZ(1, toNode.mesh.position.x, toNode.mesh.position.y, toNode.mesh.position.z);
-                    positions.needsUpdate = true;
+            // Apply only rotateZ transform
+            orbitGroup.style.transform = `rotate(${rotationDeg}deg)`;
+
+            // Update node positions based on rotation - pure translateX/translateY
+            nodes.forEach((node, index) => {
+                const angle = (index * Math.PI * 2) / 8 + rotationRef.current;
+                const x = Math.cos(angle) * nodeRadius;
+                const y = Math.sin(angle) * nodeRadius;
+
+                // Counter-rotate text inside node to keep it upright
+                const textElement = node.element.querySelector('span');
+                if (textElement) {
+                    const counterRotationDeg = -(rotationRef.current * 180) / Math.PI;
+                    textElement.style.transform = `rotate(${counterRotationDeg}deg)`;
+                }
+
+                // Update label positions
+                const labelData = nodeLabels[index];
+                if (labelData) {
+                    const labelX = centerX + x;
+                    const labelY = centerY + y;
+                    labelData.element.style.left = `${labelX}px`;
+                    labelData.element.style.top = `${labelY}px`;
+                }
+
+                // Only update position, let CSS handle hover effects
+                node.element.style.transform = `translate3d(${x}px, ${y}px, 0) translate(-50%, -50%)`;
+                
+                // Update hover class without touching transform
+                if (hoveredNodeIndex === node.index) {
+                    if (!node.element.classList.contains('is-hovered')) {
+                        node.element.classList.add('is-hovered');
+                    }
+                } else {
+                    if (node.element.classList.contains('is-hovered')) {
+                        node.element.classList.remove('is-hovered');
+                    }
+                }
+                
+                // Hide labels (only show on click)
+                if (labelData) {
+                    labelData.element.style.display = 'none';
+                    labelData.element.style.opacity = '0';
                 }
             });
-
-            // Hover detection
-            raycaster.setFromCamera(mouseRef.current, camera);
-            const intersects = raycaster.intersectObjects(nodeMeshes);
-            
-            // Reset all nodes
-            nodeMeshes.forEach((node) => {
-                const targetScale = node === hoveredNodeRef.current ? 1.5 : 1.0;
-                node.scale.lerp(new THREE.Vector3(targetScale, targetScale, targetScale), 0.1);
-                node.material.emissive.setHex(node === hoveredNodeRef.current ? 0x666666 : 0x333333);
-            });
-
-            // Reset all connections
-            connections.forEach((line) => {
-                line.material.opacity = 0;
-            });
-
-            if (intersects.length > 0) {
-                const hoveredMesh = intersects[0].object;
-                hoveredNodeRef.current = hoveredMesh;
-                const featureIndex = hoveredMesh.userData.featureIndex;
-                setHoveredNodeIndex(featureIndex);
-
-                // Show connections for hovered node
-                connections.forEach((line) => {
-                    if (line.userData.fromIdx === featureIndex || line.userData.toIdx === featureIndex) {
-                        line.material.opacity = Math.min(line.material.opacity + 0.05, 0.3);
-                    }
-                });
-            } else {
-                hoveredNodeRef.current = null;
-                setHoveredNodeIndex(null);
-            }
-
-            // Pulse core
-            pulseCore();
-
-            renderer.render(scene, camera);
         };
         animate();
 
-        // Handle resize
-        const handleResize = () => {
-            const newWidth = container.clientWidth;
-            const newHeight = Math.min(container.clientHeight || 800, 800);
-            camera.aspect = newWidth / newHeight;
-            camera.updateProjectionMatrix();
-            renderer.setSize(newWidth, newHeight);
-        };
-        window.addEventListener('resize', handleResize);
-
         // Cleanup
         return () => {
-            window.removeEventListener('resize', handleResize);
             container.removeEventListener('mousemove', handleMouseMove);
             container.removeEventListener('click', handleClick);
             if (animationFrameRef.current) {
                 cancelAnimationFrame(animationFrameRef.current);
             }
-            if (rendererRef.current) {
-                rendererRef.current.dispose();
-                if (container.contains(rendererRef.current.domElement)) {
-                    container.removeChild(rendererRef.current.domElement);
-                }
-            }
-            // Dispose geometries and materials
-            scene.traverse((object) => {
-                if (object.geometry) object.geometry.dispose();
-                if (object.material) {
-                    if (Array.isArray(object.material)) {
-                        object.material.forEach((mat) => mat.dispose());
-                    } else {
-                        object.material.dispose();
-                    }
+            // Remove all created elements
+            nodeLabels.forEach((labelData) => {
+                if (labelData.element && labelData.element.parentNode) {
+                    labelData.element.parentNode.removeChild(labelData.element);
                 }
             });
+            if (orbitGroup && orbitGroup.parentNode) {
+                orbitGroup.parentNode.removeChild(orbitGroup);
+            }
         };
-    }, [isMobile]);
+    }, [isMobile, hoveredNodeIndex]);
 
     const hoveredNode = hoveredNodeIndex !== null ? features[hoveredNodeIndex] : null;
 
@@ -1788,11 +1799,6 @@ const RiskEcosystem = () => {
                             <>
                                 <div className="risk-ecosystem-container" ref={containerRef}>
                                     <div className="risk-ecosystem-core-label">Autonomous Security Engine</div>
-                                    {hoveredNode && (
-                                        <div className="risk-ecosystem-label">
-                                            {hoveredNode.shortTitle}
-                                        </div>
-                                    )}
                                 </div>
                                 {selectedNode && (
                                     <>

@@ -371,24 +371,33 @@ body {
 /* ============================================
    SECURITY OPTIMIZATION SECTION
    ============================================ */
-    padding: var(--spacing-xl) 0;
-    background: var(--color-alternate);
+.section_posture {
+    padding: var(--spacing-md) 0;
+    background: #ffffff;
     min-height: 100px;
     position: relative;
     z-index: 1;
 }
 
+.section_posture .heading-style-h2 {
+    color: #000000;
+}
+
+.section_posture .main-section-heading {
+    color: #000000;
+}
+
 .posture-wrapper {
     display: flex;
     flex-direction: column;
-    gap: var(--spacing-lg);
+    gap: var(--spacing-sm);
 }
 
 .posture_heading {
     display: flex;
     justify-content: center;
     align-items: center;
-    margin-bottom: var(--spacing-lg);
+    margin-bottom: var(--spacing-xs);
     opacity: 1;
     transform: none;
     width: 100%;
@@ -442,6 +451,35 @@ body {
     position: relative;
     margin: var(--spacing-lg) 0;
     cursor: pointer;
+    transform: translateZ(0);
+    will-change: contents;
+}
+
+/* Orbit nodes - smooth hover with CSS only */
+.orbit-node {
+    opacity: 0.9;
+    will-change: transform;
+    transform-style: preserve-3d;
+    backface-visibility: hidden;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    transition: 
+        opacity 0.3s ease,
+        box-shadow 0.3s ease,
+        filter 0.3s ease;
+}
+
+.orbit-node.is-hovered {
+    opacity: 1;
+    box-shadow: 0 4px 20px rgba(94, 234, 212, 0.25), 0 0 40px rgba(94, 234, 212, 0.15) !important;
+    filter: brightness(1.1);
+}
+
+/* Separate transform animation - no interaction with hover */
+.orbit-node span {
+    transform-style: preserve-3d;
+    backface-visibility: hidden;
+    will-change: transform;
 }
 
 .risk-ecosystem-core-label {
@@ -450,17 +488,19 @@ body {
     left: 50%;
     transform: translate(-50%, -50%);
     pointer-events: none;
-    color: var(--color-text-primary);
-    font-size: 1.25rem;
+    color: #f8fafc;
+    font-size: 1.4rem;
     font-weight: 600;
     text-align: center;
     z-index: 10;
-    opacity: 0.7;
-    background: rgba(26, 26, 26, 0.6);
-    padding: 0.75rem 1.5rem;
+    opacity: 0.95;
+    background: rgba(15, 23, 42, 0.85);
+    padding: 0.9rem 1.8rem;
     border-radius: 50px;
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(94, 234, 212, 0.15);
+    box-shadow: 0 0 20px rgba(94, 234, 212, 0.15), 0 0 40px rgba(94, 234, 212, 0.08);
+    letter-spacing: 0.02em;
 }
 
 .risk-ecosystem-label {
@@ -893,6 +933,11 @@ body {
         background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
     }
 }
+
+/* ============================================
+   RISK ECOSYSTEM COLOR ANIMATIONS
+   ============================================ */
+/* Removed unused animations for clean enterprise look */
 
 /* ============================================
    RESPONSIVE DESIGN
