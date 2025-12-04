@@ -10,6 +10,8 @@ A ready-to-use Next.js template with shadcn/ui, Lucide icons, and Framer Motion 
 - **shadcn/ui** - Pre-built, customizable components
 - **Lucide React** - Beautiful icon library
 - **Framer Motion** - Animation library
+- **ReactBits Ready** - Pre-configured for WebGL effects from reactbits.dev
+- **Three.js & Postprocessing** - Pre-installed for 3D effects
 
 ## Pre-installed Components
 
@@ -102,6 +104,36 @@ npx shadcn@latest add alert
 npx shadcn@latest add badge
 ```
 
+## ReactBits Components
+
+This template is pre-configured for ReactBits components (WebGL effects from [reactbits.dev](https://reactbits.dev)).
+
+### Quick Integration
+
+To add a ReactBits component, simply:
+
+1. **Get the component code** from reactbits.dev
+2. **Copy the template**:
+   ```bash
+   cp components/reactbits/ReactBitsWrapper.tsx components/reactbits/MyComponent.tsx
+   ```
+3. **Replace the initialization code** with the ReactBits component code
+4. **Use it in your page**:
+   ```tsx
+   import MyComponent from '@/components/reactbits/MyComponent'
+   
+   <MyComponent className="absolute inset-0" />
+   ```
+
+### Detailed Guide
+
+See `components/reactbits/README.md` for complete integration instructions, examples, and troubleshooting.
+
+### Pre-installed Dependencies
+
+- `three` - Three.js WebGL library
+- `postprocessing` - Post-processing effects for Three.js
+
 ## Available Scripts
 
 - `npm run dev` - Start development server
@@ -118,9 +150,13 @@ landing-page-template/
 │   ├── layout.tsx       # Root layout
 │   └── page.tsx         # Home page
 ├── components/
-│   └── ui/              # shadcn/ui components
+│   ├── ui/              # shadcn/ui components
+│   └── reactbits/       # ReactBits WebGL components
+│       ├── ReactBitsWrapper.tsx  # Template wrapper
+│       └── README.md             # Integration guide
 ├── lib/
-│   └── utils.ts         # Utility functions (cn helper)
+│   ├── utils.ts         # Utility functions (cn helper)
+│   └── reactbits.ts     # ReactBits utility functions
 └── public/              # Static assets
 ```
 

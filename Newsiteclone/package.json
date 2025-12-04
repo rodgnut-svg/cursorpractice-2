@@ -1,0 +1,37 @@
+{
+  "name": "pellonium-landing-page",
+  "version": "1.0.0",
+  "description": "Modern, responsive landing page for Pellonium built with React and Vite, featuring 3D animations, interactive carousels, and smooth scroll animations",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "start": "vite"
+  },
+  "dependencies": {
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "three": "^0.160.0",
+    "postprocessing": "^6.35.3",
+    "swiper": "^11.0.5"
+  },
+  "devDependencies": {
+    "@types/react": "^18.2.43",
+    "@types/react-dom": "^18.2.17",
+    "@vitejs/plugin-react": "^4.2.1",
+    "vite": "^5.0.8"
+  },
+  "keywords": [
+    "landing-page",
+    "react",
+    "vite",
+    "three.js",
+    "swiper",
+    "3d-animations"
+  ],
+  "author": "Pellonium",
+  "license": "MIT"
+}
+
