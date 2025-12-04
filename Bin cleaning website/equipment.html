@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="styles.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 </head>
 <body>
     <!-- Navigation -->
@@ -17,7 +17,12 @@
                 <div class="nav-logo">
                     <a href="index.html"><img src="assets/logo.png" alt="The Trash Can Cleaners Logo"></a>
                 </div>
-                <ul class="nav-menu">
+                <button class="mobile-menu-toggle" id="mobile-menu-toggle" aria-label="Toggle menu">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+                <ul class="nav-menu" id="nav-menu">
                     <li><a href="index.html" class="nav-link">Home</a></li>
                     <li><a href="about.html" class="nav-link">About Us</a></li>
                     <li><a href="#blog" class="nav-link">Blog</a></li>
@@ -27,113 +32,139 @@
         </div>
     </nav>
 
-    <!-- Equipment Options Section -->
-    <section id="equipment" class="equipment">
+    <!-- Mobile Menu Backdrop -->
+    <div class="menu-backdrop" id="menu-backdrop"></div>
+
+    <!-- Equipment Hero Section -->
+    <section class="equipment-hero">
         <div class="container">
-            <h2 class="section-title equip-title">Equipment We Build</h2>
-            <div class="equip-accent"></div>
-            <div class="equipment-grid">
-                <div class="equipment-card">
-                    <div class="equipment-card-accent"></div>
-                    <div class="equipment-card-content">
-                        <div class="equipment-label">Truck-Mounted System</div>
-                        <h3 class="equipment-title">Flatbed Units</h3>
-                        <ul class="equipment-list">
-                            <li>Versatile flatbed systems for mounting on trucks.</li>
-                            <li>Ideal for residential or mixed residential/commercial routes.</li>
-                        </ul>
+            <h1 class="equipment-hero-title">Professional Bin Cleaning Equipment</h1>
+            <p class="equipment-hero-subtitle">Our Showcase</p>
+            <p class="equipment-hero-description">Discover our range of professional-grade bin cleaning systems designed for efficiency, durability, and profitability. Each unit is built to handle high-volume routes while maintaining consistent quality results.</p>
+        </div>
+    </section>
+
+    <!-- Equipment Showcase Grid -->
+    <section class="equipment-showcase-grid">
+        <div class="container">
+            <div class="equipment-projects-grid">
+                <div class="equipment-project-card">
+                    <div class="equipment-project-image">
+                        <img src="assets/aboutuspics1.png" alt="Flatbed Units">
+                    </div>
+                    <div class="equipment-project-overlay">
+                        <h3 class="equipment-project-title">Flatbed Units</h3>
+                        <p class="equipment-project-description">Versatile truck-mounted systems ideal for residential or mixed residential/commercial routes. Perfect for operators starting their first route.</p>
+                        <a href="#flatbed" class="equipment-project-link">View Details →</a>
                     </div>
                 </div>
-                <div class="equipment-card">
-                    <div class="equipment-card-accent"></div>
-                    <div class="equipment-card-content">
-                        <div class="equipment-label">Trailer-Mounted System</div>
-                        <h3 class="equipment-title">Trailer Units</h3>
-                        <ul class="equipment-list">
-                            <li>Mobile systems mounted on trailers for easy transport.</li>
-                            <li>Great when you don't want to dedicate a full truck chassis.</li>
-                        </ul>
+
+                <div class="equipment-project-card">
+                    <div class="equipment-project-image">
+                        <img src="assets/aboutuspics2.png" alt="Trailer Units">
+                    </div>
+                    <div class="equipment-project-overlay">
+                        <h3 class="equipment-project-title">Trailer Units</h3>
+                        <p class="equipment-project-description">Mobile systems mounted on trailers for easy transport. Great when you don't want to dedicate a full truck chassis to bin cleaning.</p>
+                        <a href="#trailer" class="equipment-project-link">View Details →</a>
                     </div>
                 </div>
-                <div class="equipment-card">
-                    <div class="equipment-card-accent"></div>
-                    <div class="equipment-card-content">
-                        <div class="equipment-label">Fixed Installation</div>
-                        <h3 class="equipment-title">Stationary Units</h3>
-                        <ul class="equipment-list">
-                            <li>Fixed systems for high-volume operations.</li>
-                            <li>Suited to depots, yards, or commercial facilities.</li>
-                        </ul>
+
+                <div class="equipment-project-card">
+                    <div class="equipment-project-image">
+                        <img src="assets/bincleanerdemo.png" alt="Stationary Units">
+                    </div>
+                    <div class="equipment-project-overlay">
+                        <h3 class="equipment-project-title">Stationary Units</h3>
+                        <p class="equipment-project-description">Fixed systems for high-volume operations. Suited to depots, yards, or commercial facilities requiring consistent cleaning capacity.</p>
+                        <a href="#stationary" class="equipment-project-link">View Details →</a>
                     </div>
                 </div>
-                <div class="equipment-card">
-                    <div class="equipment-card-accent"></div>
-                    <div class="equipment-card-content">
-                        <div class="equipment-label">Custom-Built Solution</div>
-                        <h3 class="equipment-title">Custom Units</h3>
-                        <ul class="equipment-list">
-                            <li>Fully customized builds to match unique requirements.</li>
-                            <li>Layouts, tank sizes, and components tailored to your needs.</li>
-                        </ul>
+
+                <div class="equipment-project-card">
+                    <div class="equipment-project-image">
+                        <img src="assets/Bin_Cleaner_Complete.jpg" alt="Custom Units">
+                    </div>
+                    <div class="equipment-project-overlay">
+                        <h3 class="equipment-project-title">Custom Units</h3>
+                        <p class="equipment-project-description">Fully customized builds to match unique requirements. Layouts, tank sizes, and components tailored to your specific operational needs.</p>
+                        <a href="#custom" class="equipment-project-link">View Details →</a>
                     </div>
                 </div>
-                <div class="equipment-card equipment-card-full-width">
-                    <div class="equipment-card-accent"></div>
-                    <div class="equipment-card-content">
-                        <div class="equipment-label">Lightweight Flatbed Option</div>
-                        <h3 class="equipment-title">Custom Aluminum Flatbeds</h3>
-                        <ul class="equipment-list">
-                            <li>Lightweight aluminum construction reduces weight and eliminates rust concerns.</li>
-                            <li>Allows trucks to carry more water and equipment.</li>
-                        </ul>
+
+                <div class="equipment-project-card">
+                    <div class="equipment-project-image">
+                        <img src="assets/12_ft_Bin_Cleaning_Truck2.jpg" alt="Custom Aluminum Flatbeds">
+                    </div>
+                    <div class="equipment-project-overlay">
+                        <h3 class="equipment-project-title">Custom Aluminum Flatbeds</h3>
+                        <p class="equipment-project-description">Lightweight aluminum construction reduces weight and eliminates rust concerns. Allows trucks to carry more water and equipment.</p>
+                        <a href="#aluminum" class="equipment-project-link">View Details →</a>
+                    </div>
+                </div>
+
+                <div class="equipment-project-card">
+                    <div class="equipment-project-image">
+                        <img src="assets/1The_Trash_Can_Cleaners_Bin_Cleaner_1.jpg" alt="Dual-Bin Systems">
+                    </div>
+                    <div class="equipment-project-overlay">
+                        <h3 class="equipment-project-title">Dual-Bin Systems</h3>
+                        <p class="equipment-project-description">High-capacity systems for commercial routes and high-volume operations. Maximize efficiency per stop with dual-bin cleaning capability.</p>
+                        <a href="#dual" class="equipment-project-link">View Details →</a>
                     </div>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- What Is a Wheelie Bin Cleaner Section (acts as page hero) -->
-    <section class="how-it-works">
+    <!-- How It Works Section -->
+    <section class="equipment-how-it-works">
         <div class="container">
-            <h2 class="section-title">What Is a Wheelie Bin Cleaner?</h2>
-            <div class="how-it-works-content">
-                <div class="how-it-works-text">
+            <div class="equipment-content-grid">
+                <div class="equipment-content-text">
+                    <h2 class="section-title">What Is a Wheelie Bin Cleaner?</h2>
                     <p>Our wheelie bin cleaning systems use a combination of hot water and high-pressure sanitizing to thoroughly clean and disinfect trash bins in seconds. The process is both efficient and eco-friendly, using advanced wastewater recovery systems to minimize environmental impact.</p>
                     <p>Each unit is designed to deliver powerful cleaning performance while maintaining water efficiency. The hot water helps break down grease and grime, while the high-pressure system ensures complete sanitization, leaving bins clean, fresh, and odor-free.</p>
                     <p>With our equipment, you can clean multiple bins quickly, making it perfect for residential routes and commercial applications. The wastewater recovery system ensures responsible water usage, making this an environmentally conscious business opportunity.</p>
                 </div>
-                <div class="how-it-works-image">
-                    <img src="assets/bincleanerdemo.png" alt="Wheelie bin cleaner in action">
+                <div class="equipment-content-image">
+                    <img src="assets/Bin_Cleaners_Sunny.jpg" alt="Wheelie bin cleaner in action">
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Financing Options Section -->
-    <section class="financing-section">
+    <!-- Financing Section -->
+    <section class="equipment-financing">
         <div class="container">
-            <div class="financing-header">
-                <h2 class="financing-headline">Financing Options for Bin Cleaning Systems</h2>
-                <div class="financing-accent"></div>
-                <p class="financing-subtitle">
-                    Flexible funding paths designed to match your growth, cash flow, and fleet plans.
-                </p>
-            </div>
-            <div class="financing-content">
-                <div class="financing-left">
-                    <p class="financing-description">
-                        We have multiple financing options available to help start or expand trash bin cleaning businesses. There are several ways to get someone started in the business, whether it's a brand new build on a new chassis, a used bin cleaning system that needs upgrades, or adding our system to an existing truck.
-                    </p>
+            <div class="financing-content-wrapper">
+                <div class="financing-text-column">
+                    <h2 class="section-title">Financing Options for Bin Cleaning Systems</h2>
+                    <p class="financing-description">We have multiple financing options available to help start or expand trash bin cleaning businesses. There are several ways to get someone started in the business, whether it's a brand new build on a new chassis, a used bin cleaning system that needs upgrades, or adding our system to an existing truck.</p>
+                    <p class="financing-description">Flexible funding paths designed to match your growth, cash flow, and fleet plans.</p>
                 </div>
-                <div class="financing-right">
-                    <div class="financing-card">
-                        <a href="https://thetrashcancleaners.com/financing-credit-app" class="btn btn-financing">Apply for Financing</a>
-                        <div class="financing-contact">
-                            <p class="financing-contact-line">Contact us at <a href="tel:210-971-4980">210-971-4980</a> / <a href="mailto:clean@thetrashcancleaners.com">clean@thetrashcancleaners.com</a></p>
-                            <p class="financing-contact-line">Call Brannon Fowler directly at <a href="tel:501-553-8276">501-553-8276</a></p>
+                <div class="financing-card-column">
+                    <div class="financing-cta-card">
+                        <a href="https://thetrashcancleaners.com/financing-credit-app" class="btn btn-primary btn-large">Apply for Financing</a>
+                        <div class="financing-contact-info">
+                            <p><strong>Contact us:</strong></p>
+                            <p><a href="tel:210-971-4980">210-971-4980</a></p>
+                            <p><a href="mailto:clean@thetrashcancleaners.com">clean@thetrashcancleaners.com</a></p>
+                            <p class="financing-direct-contact">Call Brannon Fowler directly at <a href="tel:501-553-8276">501-553-8276</a></p>
                         </div>
                     </div>
                 </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Final CTA Section -->
+    <section class="equipment-final-cta">
+        <div class="container">
+            <div class="equipment-cta-card">
+                <h2 class="equipment-cta-title">Ready to Build Your Bin Cleaning Rig?</h2>
+                <p class="equipment-cta-text">Get a custom quote and consultation to start your bin cleaning business journey.</p>
+                <a href="index.html#contact-form" class="btn btn-primary btn-large">Get a Quote</a>
             </div>
         </div>
     </section>
@@ -163,5 +194,3 @@
     <script src="script.js"></script>
 </body>
 </html>
-
-

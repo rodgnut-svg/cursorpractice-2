@@ -17,7 +17,12 @@
                 <div class="nav-logo">
                     <a href="index.html"><img src="assets/logo.png" alt="The Trash Can Cleaners Logo"></a>
                 </div>
-                <ul class="nav-menu">
+                <button class="mobile-menu-toggle" id="mobile-menu-toggle" aria-label="Toggle menu">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
+                <ul class="nav-menu" id="nav-menu">
                     <li><a href="index.html" class="nav-link">Home</a></li>
                     <li><a href="about.html" class="nav-link active">About Us</a></li>
                     <li><a href="#blog" class="nav-link">Blog</a></li>
@@ -26,6 +31,9 @@
             </div>
         </div>
     </nav>
+
+    <!-- Mobile Menu Backdrop -->
+    <div class="menu-backdrop" id="menu-backdrop"></div>
 
     <!-- Combined About Hero & Origin Story Section -->
     <section class="about-hero">

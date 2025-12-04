@@ -140,4 +140,74 @@ document.addEventListener('DOMContentLoaded', function() {
             benefitObserver.observe(card);
         });
     }
+
+    // Mobile menu toggle
+    const mobileMenuToggle = document.getElementById('mobile-menu-toggle');
+    const navMenu = document.getElementById('nav-menu');
+    const menuBackdrop = document.getElementById('menu-backdrop');
+    
+    if (mobileMenuToggle && navMenu) {
+        console.log('Mobile menu elements found:', mobileMenuToggle, navMenu);
+        
+        mobileMenuToggle.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            console.log('Menu toggle clicked');
+            
+            navMenu.classList.toggle('active');
+            mobileMenuToggle.classList.toggle('active');
+            if (menuBackdrop) {
+                menuBackdrop.classList.toggle('active');
+            }
+            
+            console.log('Menu active state:', navMenu.classList.contains('active'));
+            
+            // Prevent body scroll when menu is open
+            if (navMenu.classList.contains('active')) {
+                document.body.style.overflow = 'hidden';
+            } else {
+                document.body.style.overflow = '';
+            }
+        });
+
+        // Close menu when clicking on a link
+        const navLinks = navMenu.querySelectorAll('.nav-link');
+        navLinks.forEach(link => {
+            link.addEventListener('click', function() {
+                navMenu.classList.remove('active');
+                mobileMenuToggle.classList.remove('active');
+                if (menuBackdrop) {
+                    menuBackdrop.classList.remove('active');
+                }
+                document.body.style.overflow = '';
+            });
+        });
+
+        // Close menu when clicking backdrop
+        if (menuBackdrop) {
+            menuBackdrop.addEventListener('click', function() {
+                navMenu.classList.remove('active');
+                mobileMenuToggle.classList.remove('active');
+                menuBackdrop.classList.remove('active');
+                document.body.style.overflow = '';
+            });
+        }
+
+        // Close menu when clicking outside
+        document.addEventListener('click', function(event) {
+            const isClickInsideNav = navMenu.contains(event.target);
+            const isClickOnToggle = mobileMenuToggle.contains(event.target);
+            
+            if (!isClickInsideNav && !isClickOnToggle && navMenu.classList.contains('active')) {
+                navMenu.classList.remove('active');
+                mobileMenuToggle.classList.remove('active');
+                if (menuBackdrop) {
+                    menuBackdrop.classList.remove('active');
+                }
+                document.body.style.overflow = '';
+            }
+        });
+    } else {
+        console.error('Mobile menu elements not found:', { mobileMenuToggle, navMenu });
+    }
 });
