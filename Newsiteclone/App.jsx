@@ -15,6 +15,7 @@ import * as THREE from 'three';
 import { BloomEffect, EffectComposer, EffectPass, RenderPass, SMAAEffect, SMAAPreset } from 'postprocessing';
 import Swiper from 'swiper';
 import 'swiper/css';
+import { Shield, Zap, Target, TrendingUp } from 'lucide-react';
 
 // ============================================
 // UTILITIES & HOOKS
@@ -1481,9 +1482,9 @@ const RiskEcosystem = () => {
             'radial-gradient(circle at 30% 30%, #1e293b 0%, #0f172a 50%, #020617 100%)',
             'radial-gradient(circle at 30% 30%, #1e293b 0%, #0f172a 50%, #020617 100%)'
         ],
-        nodeBorder: 'rgba(94, 234, 212, 0.3)', // Cool cyan accent border
-        nodeShadow: '0 2px 12px rgba(0, 0, 0, 0.4), 0 0 24px rgba(0, 0, 0, 0.2)',
-        nodeShadowHover: '0 4px 20px rgba(94, 234, 212, 0.25), 0 0 40px rgba(94, 234, 212, 0.15)',
+        nodeBorder: '#000000', // Black crisp border
+        nodeShadow: '0 2px 8px rgba(0, 0, 0, 0.3)',
+        nodeShadowHover: '0 4px 12px rgba(0, 0, 0, 0.4)',
         orbitRingColor: 'rgba(94, 234, 212, 0.08)',
         textColor: '#f8fafc', // Near-white for better contrast
         labelBg: 'rgba(15, 23, 42, 0.95)',
@@ -1543,10 +1544,10 @@ const RiskEcosystem = () => {
 
         const container = containerRef.current;
         const width = container.clientWidth;
-        const height = Math.min(container.clientHeight || 800, 800);
+        const height = container.clientHeight || 500;
         const centerX = width / 2;
         const centerY = height / 2;
-        const nodeRadius = 320; // Orbit radius for nodes
+        const nodeRadius = Math.min(width, height) * 0.35; // Adaptive orbit radius based on container size
 
         // Create orbit group container (for rotation) - pure 2D CSS
         const orbitGroup = document.createElement('div');
@@ -1591,7 +1592,7 @@ const RiskEcosystem = () => {
             nodeElement.style.justifyContent = 'center';
             nodeElement.style.padding = '0.5rem';
             nodeElement.style.overflow = 'visible';
-            nodeElement.style.border = `1px solid ${scheme.nodeBorder}`;
+            nodeElement.style.border = `2px solid ${scheme.nodeBorder}`;
             nodeElement.dataset.nodeIndex = index;
             nodeElement.dataset.shadowHover = scheme.nodeShadowHover;
             nodeElement.dataset.shadowNormal = scheme.nodeShadow;
@@ -1777,28 +1778,54 @@ const RiskEcosystem = () => {
             <div className="global-padding padding-section-risk">
                 <div className="container-large">
                     <div className="posture-wrapper">
-                        <div className="posture_heading animate">
-                            <div className="main-section-heading">
-                                <h2 className="heading-style-h2">Security Optimization Options</h2>
-                            </div>
-                        </div>
                         {isMobile ? (
-                            // Mobile fallback - grid layout
-                            <div className="posture_cards animate">
-                                {features.map((feature, index) => (
-                                    <div key={index} className={`posture_card fade-in-${index + 1}`}>
-                                        <div className="posture_card-icon" dangerouslySetInnerHTML={{__html: feature.icon}}></div>
-                                        <div className="posture_card-content">
-                                            <h3 className="heading-style-h4">{feature.title}</h3>
-                                            <p className="text-size-sm text-color-secondary">{feature.description}</p>
-                                        </div>
+                            <>
+                                <div className="posture_heading animate">
+                                    <div className="main-section-heading">
+                                        <h2 className="heading-style-h2">Security Options</h2>
                                     </div>
-                                ))}
-                            </div>
+                                </div>
+                                <div className="posture_cards animate">
+                                    {features.map((feature, index) => (
+                                        <div key={index} className={`posture_card fade-in-${index + 1}`}>
+                                            <div className="posture_card-icon" dangerouslySetInnerHTML={{__html: feature.icon}}></div>
+                                            <div className="posture_card-content">
+                                                <h3 className="heading-style-h4">{feature.title}</h3>
+                                                <p className="text-size-sm text-color-secondary">{feature.description}</p>
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            </>
                         ) : (
                             <>
-                                <div className="risk-ecosystem-container" ref={containerRef}>
-                                    <div className="risk-ecosystem-core-label">Autonomous Security Engine</div>
+                                <div className="posture-layout-desktop">
+                                    <div className="posture-text-content">
+                                        <h2 className="heading-style-h2">Security Options</h2>
+                                        <p className="text-size-md text-color-secondary">
+                                            Explore our comprehensive suite of security optimization capabilities designed to continuously reduce cyber risk and maximize the performance of your security infrastructure.
+                                        </p>
+                                        <div className="posture-features-grid">
+                                            <div className="posture-feature-item">
+                                                <Shield className="posture-feature-icon" size={20} strokeWidth={2} />
+                                                <span className="posture-feature-text">Advanced Protection</span>
+                                            </div>
+                                            <div className="posture-feature-item">
+                                                <Zap className="posture-feature-icon" size={20} strokeWidth={2} />
+                                                <span className="posture-feature-text">Real-Time Response</span>
+                                            </div>
+                                            <div className="posture-feature-item">
+                                                <Target className="posture-feature-icon" size={20} strokeWidth={2} />
+                                                <span className="posture-feature-text">Precision Targeting</span>
+                                            </div>
+                                            <div className="posture-feature-item">
+                                                <TrendingUp className="posture-feature-icon" size={20} strokeWidth={2} />
+                                                <span className="posture-feature-text">Continuous Improvement</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div className="risk-ecosystem-container" ref={containerRef}>
+                                    </div>
                                 </div>
                                 {selectedNode && (
                                     <>
@@ -2103,19 +2130,25 @@ const useLenisSmoothScroll = () => {
                 // Get all sections
                 const sections = document.querySelectorAll('section');
                 
-                // Function to find nearest section
+                // Function to find nearest section CENTER (not top)
                 const findNearestSection = (scroll) => {
                     let nearest = null;
                     let minDistance = Infinity;
+                    const viewportCenter = window.innerHeight / 2;
                     
                     sections.forEach((section) => {
                         const rect = section.getBoundingClientRect();
-                        const sectionTop = scroll + rect.top;
-                        const distance = Math.abs(scroll - sectionTop);
+                        // Calculate the CENTER of the section
+                        const sectionCenter = scroll + rect.top + (rect.height / 2);
+                        // Calculate the scroll position needed to center this section in viewport
+                        const targetScroll = sectionCenter - viewportCenter;
+                        // Distance from current scroll to target scroll
+                        const distance = Math.abs(scroll - targetScroll);
                         
                         if (distance < minDistance && distance < window.innerHeight * 0.5) {
                             minDistance = distance;
-                            nearest = sectionTop;
+                            // Return the scroll position that centers this section in viewport
+                            nearest = targetScroll;
                         }
                     });
                     
