@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "lucide-react": "^0.555.0",
+    "motion": "^12.23.25",
     "postprocessing": "^6.35.3",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",

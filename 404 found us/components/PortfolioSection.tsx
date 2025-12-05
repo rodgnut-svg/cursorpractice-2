@@ -7,12 +7,12 @@ import DesignPreviewModal from "@/components/DesignPreviewModal";
 
 const projects = [
   {
-    title: "Cyber Security",
-    category: "Security Solutions",
-    description: "A complete digital transformation for a leading cyber security firm, focusing on minimal design and maximum impact.",
+    title: "Automated Booking Agency",
+    category: "AI Automation",
+    description: "AI-powered automation platform featuring WhatsApp bots, booking systems, and CRM flows that streamline business operations.",
     year: "2024",
     websiteUrl: "https://www.zimsaas.io",
-    image: "/portfolio/cyber-security.svg",
+    image: "/portfolio/zimsaas-preview.png",
     images: [],
   },
   {
@@ -37,21 +37,17 @@ const projects = [
 
 export default function PortfolioSection() {
   const [selectedProject, setSelectedProject] = useState<number | null>(null);
-  const [isMounted, setIsMounted] = useState(false);
   const targetRef = useRef<HTMLDivElement>(null);
-  
-  useEffect(() => {
-    setIsMounted(true);
-  }, []);
   
   const { scrollYProgress } = useScroll({
     target: targetRef,
-    offset: ["start start", "end end"]
+    offset: ["start start", "end end"],
+    layoutEffect: false
   });
   
   // Calculate transform based on number of items
   // Each item is ~600px + 48px gap, we want to scroll through all items
-  const x = useTransform(scrollYProgress, [0, 1], isMounted ? ["1%", "-66%"] : ["0%", "0%"]);
+  const x = useTransform(scrollYProgress, [0, 1], ["1%", "-66%"]);
 
   return (
     <>
@@ -84,12 +80,12 @@ export default function PortfolioSection() {
               >
                 <div className="space-y-6">
                   {/* Image */}
-                  <div className="relative w-full aspect-[4/3] bg-muted rounded-sm overflow-hidden">
+                  <div className="relative w-full aspect-[4/3] bg-white border border-border rounded-sm overflow-hidden">
                     <Image
                       src={project.image}
                       alt={project.title}
                       fill
-                      className="object-cover transition-transform duration-500 group-hover:scale-105"
+                      className="object-contain p-8 transition-transform duration-500 group-hover:scale-105"
                       sizes="(max-width: 768px) 400px, (max-width: 1024px) 500px, 600px"
                     />
                     

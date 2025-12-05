@@ -1,7 +1,7 @@
 "use client";
 
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { X, Image as ImageIcon, Globe } from "lucide-react";
+import { Image as ImageIcon, Globe } from "lucide-react";
 import Image from "next/image";
 import { useState } from "react";
 
@@ -26,16 +26,7 @@ export default function DesignPreviewModal({
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="max-w-6xl max-h-[90vh] overflow-hidden p-0">
         <DialogHeader className="px-6 pt-6 pb-4 border-b">
-          <div className="flex items-center justify-between">
-            <DialogTitle className="text-2xl font-serif">{title}</DialogTitle>
-            <button
-              onClick={onClose}
-              className="rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2"
-            >
-              <X className="h-5 w-5" />
-              <span className="sr-only">Close</span>
-            </button>
-          </div>
+          <DialogTitle className="text-2xl font-serif">{title}</DialogTitle>
           
           {/* Toggle between images and live preview */}
           {websiteUrl && images.length > 0 && (

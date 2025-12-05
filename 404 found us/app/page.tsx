@@ -8,8 +8,9 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-white">
       <Navigation />
-      <main>
+      <main className="relative">
         <HeroSection />
+        <div className="h-32 md:h-40 lg:h-48" />
         <PortfolioSection />
         <ContactSection />
       </main>

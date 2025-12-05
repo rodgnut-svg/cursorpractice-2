@@ -16,6 +16,8 @@ import { BloomEffect, EffectComposer, EffectPass, RenderPass, SMAAEffect, SMAAPr
 import Swiper from 'swiper';
 import 'swiper/css';
 import { Shield, Zap, Target, TrendingUp } from 'lucide-react';
+import TrueFocus from './TrueFocus';
+import './TrueFocus.css';
 
 // ============================================
 // UTILITIES & HOOKS
@@ -1290,134 +1292,7 @@ const Hyperspeed = ({
  * Main hero section with animated heading and Hyperspeed background
  */
 const Hero = () => {
-    const headingRef = useRef(null);
     const headingText = "Manage Exposure, Optimize Identity";
-
-    useEffect(() => {
-        if (!headingRef.current) return;
-        
-        // Always ensure center alignment
-        headingRef.current.style.textAlign = 'center';
-        
-        // Check if text has already been animated (has character spans)
-        const alreadyAnimated = headingRef.current.querySelector('.char');
-        if (alreadyAnimated) {
-            // Text is already animated, ensure all chars are visible and stay visible
-            const chars = headingRef.current.querySelectorAll('.char');
-            chars.forEach(char => {
-                char.classList.add('visible');
-                char.style.opacity = '1';
-                char.style.transform = 'translateY(0)';
-            });
-            // Ensure center alignment
-            headingRef.current.style.textAlign = 'center';
-            return;
-        }
-        
-        // On initial load, keep text visible - don't animate
-        const isInitialLoad = window.scrollY === 0;
-        let hasAnimated = false;
-        let observerInstance = null;
-        
-        const animateText = () => {
-            if (hasAnimated || !headingRef.current) return;
-            hasAnimated = true;
-            
-            // Check if text hasn't been animated yet
-            if (!headingRef.current.querySelector('.char')) {
-                // Ensure parent maintains center alignment
-                headingRef.current.style.textAlign = 'center';
-                
-                const words = headingText.split(' ');
-                headingRef.current.innerHTML = words.map((word, wordIndex) => {
-                    return word.split('').map((char, charIndex) => {
-                        return `<span class="char" data-char-id="${wordIndex}-${charIndex}" style="display:inline-block;opacity:0;transform:translateY(150%);transition:all 0.3s ease ${charIndex * 0.03}s">${char === ' ' ? '&nbsp;' : char}</span>`;
-                    }).join('');
-                }).join(' ');
-                
-                // Start animation immediately
-                requestAnimationFrame(() => {
-                    const chars = headingRef.current?.querySelectorAll('.char');
-                    if (chars) {
-                        chars.forEach((char, index) => {
-                            setTimeout(() => {
-                                char.classList.add('visible');
-                            }, index * 30);
-                        });
-                    }
-                });
-            }
-        };
-        
-        const ensureTextVisible = () => {
-            if (!headingRef.current) return;
-            // Always ensure center alignment
-            headingRef.current.style.textAlign = 'center';
-            
-            const chars = headingRef.current.querySelectorAll('.char');
-            if (chars.length > 0) {
-                // Already animated, ensure all are visible - NO RE-ANIMATION
-                chars.forEach(char => {
-                    char.classList.add('visible');
-                    char.style.opacity = '1';
-                    char.style.transform = 'translateY(0)';
-                });
-            } else {
-                // Not animated yet, ensure plain text is visible
-                if (headingRef.current.textContent !== headingText) {
-                    headingRef.current.textContent = headingText;
-                }
-            }
-        };
-        
-        observerInstance = new IntersectionObserver(
-            (entries) => {
-                if (entries[0].isIntersecting && headingRef.current) {
-                    // Always ensure text is visible and centered when in viewport
-                    ensureTextVisible();
-                    
-                    // Only animate on initial load if element comes into view for first time
-                    if (!hasAnimated && !headingRef.current.querySelector('.char') && isInitialLoad) {
-                        // Don't animate on initial load - keep text visible
-                        return;
-                    }
-                }
-            },
-            { threshold: 0.1 }
-        );
-        
-        // Check initial state - ensure text is visible on load
-        const rect = headingRef.current.getBoundingClientRect();
-        const isInViewport = rect.top < window.innerHeight && rect.bottom > 0;
-        
-        if (isInViewport) {
-            // Already in viewport on load, keep text visible (don't animate)
-            ensureTextVisible();
-        }
-        
-        // Track scroll to ensure text stays visible and centered
-        const handleScroll = () => {
-            if (headingRef.current) {
-                const rect = headingRef.current.getBoundingClientRect();
-                const isVisible = rect.top < window.innerHeight && rect.bottom > 0;
-                if (isVisible) {
-                    // Just ensure visibility and alignment - NO ANIMATION
-                    ensureTextVisible();
-                    headingRef.current.style.textAlign = 'center';
-                }
-            }
-        };
-        
-        window.addEventListener('scroll', handleScroll, { passive: true });
-        observerInstance.observe(headingRef.current);
-        
-        return () => {
-            if (observerInstance && headingRef.current) {
-                observerInstance.unobserve(headingRef.current);
-            }
-            window.removeEventListener('scroll', handleScroll);
-        };
-    }, [headingText]);
 
     return (
         <section className="section_home-hero">
@@ -1428,7 +1303,16 @@ const Hero = () => {
                 <div className="container-large">
                     <div className="home-hero">
                         <div className="home-hero_copy">
-                            <h1 ref={headingRef} className="heading-style-h1">{headingText}</h1>
+                            <h1 className="heading-style-h1">
+                                <TrueFocus 
+                                    sentence={headingText}
+                                    manualMode={false}
+                                    blurAmount={5}
+                                    borderColor="red"
+                                    animationDuration={2}
+                                    pauseBetweenAnimations={1}
+                                />
+                            </h1>
                             <p className="text-size-md">
                                 Unified Security Optimization to continuously reduce cyber risk, maximize security stack performance, and deliver measurable ROI.
                             </p>

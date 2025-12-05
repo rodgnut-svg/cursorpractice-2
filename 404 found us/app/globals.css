@@ -35,6 +35,10 @@
     @apply border-border;
   }
   
+  html {
+    position: relative;
+  }
+  
   body {
     @apply bg-white text-foreground;
     font-family: var(--font-inter), system-ui, -apple-system, sans-serif;
