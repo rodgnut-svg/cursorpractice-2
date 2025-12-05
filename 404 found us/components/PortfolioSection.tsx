@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
 import Image from "next/image";
 import DesignPreviewModal from "@/components/DesignPreviewModal";
@@ -37,7 +37,12 @@ const projects = [
 
 export default function PortfolioSection() {
   const [selectedProject, setSelectedProject] = useState<number | null>(null);
+  const [isMounted, setIsMounted] = useState(false);
   const targetRef = useRef<HTMLDivElement>(null);
+  
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
   
   const { scrollYProgress } = useScroll({
     target: targetRef,
@@ -46,7 +51,7 @@ export default function PortfolioSection() {
   
   // Calculate transform based on number of items
   // Each item is ~600px + 48px gap, we want to scroll through all items
-  const x = useTransform(scrollYProgress, [0, 1], ["1%", "-66%"]);
+  const x = useTransform(scrollYProgress, [0, 1], isMounted ? ["1%", "-66%"] : ["0%", "0%"]);
 
   return (
     <>
