@@ -16,8 +16,6 @@ import { BloomEffect, EffectComposer, EffectPass, RenderPass, SMAAEffect, SMAAPr
 import Swiper from 'swiper';
 import 'swiper/css';
 import { Shield, Zap, Target, TrendingUp } from 'lucide-react';
-import TrueFocus from './TrueFocus';
-import './TrueFocus.css';
 
 // ============================================
 // UTILITIES & HOOKS
@@ -1304,14 +1302,7 @@ const Hero = () => {
                     <div className="home-hero">
                         <div className="home-hero_copy">
                             <h1 className="heading-style-h1">
-                                <TrueFocus 
-                                    sentence={headingText}
-                                    manualMode={false}
-                                    blurAmount={5}
-                                    borderColor="red"
-                                    animationDuration={2}
-                                    pauseBetweenAnimations={1}
-                                />
+                                {headingText}
                             </h1>
                             <p className="text-size-md">
                                 Unified Security Optimization to continuously reduce cyber risk, maximize security stack performance, and deliver measurable ROI.
