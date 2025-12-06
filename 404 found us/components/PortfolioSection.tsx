@@ -4,6 +4,7 @@ import { useState, useRef, useEffect } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
 import Image from "next/image";
 import DesignPreviewModal from "@/components/DesignPreviewModal";
+import TrueFocus from "@/components/TrueFocus";
 
 const projects = [
   {
@@ -20,7 +21,7 @@ const projects = [
     category: "Premium Experience",
     description: "Elegant landing page for a mobile golf simulation studio, emphasizing luxury and accessibility.",
     year: "2024",
-    websiteUrl: "",
+    websiteUrl: "https://augustacountryclub.co/",
     image: "/portfolio/loft-golf.svg",
     images: [],
   },
@@ -29,7 +30,7 @@ const projects = [
     category: "Architecture Firm",
     description: "Portfolio website showcasing innovative architectural projects with a focus on visual storytelling.",
     year: "2023",
-    websiteUrl: "",
+    websiteUrl: "https://www.zara.com/",
     image: "/portfolio/urban-collective.svg",
     images: [],
   },
@@ -54,13 +55,18 @@ export default function PortfolioSection() {
       <section ref={targetRef} id="work" className="relative w-full h-[400vh]">
         <div className="sticky top-0 h-screen flex flex-col justify-center overflow-hidden">
           <div className="px-8 md:px-12 lg:px-16 mb-16">
-            <div className="max-w-7xl mx-auto space-y-6">
-              <h2 className="text-4xl md:text-5xl lg:text-6xl font-serif leading-tight">
-                Selected work.
+            <div className="max-w-7xl mx-auto">
+              <h2 className="text-3xl md:text-4xl lg:text-5xl font-serif font-bold uppercase leading-tight">
+                <TrueFocus 
+                  sentence="SELECTED WORK."
+                  separator=" "
+                  blurAmount={3}
+                  borderColor="black"
+                  glowColor="rgba(0, 0, 0, 0.3)"
+                  animationDuration={0.6}
+                  pauseBetweenAnimations={1.5}
+                />
               </h2>
-              <p className="text-lg md:text-xl text-muted-foreground max-w-2xl">
-                We've helped ambitious brands transform their digital presence.
-              </p>
             </div>
           </div>
 

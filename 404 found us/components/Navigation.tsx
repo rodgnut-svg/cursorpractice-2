@@ -3,7 +3,7 @@ export default function Navigation() {
     <nav className="w-full py-8 px-8 md:px-12 lg:px-16">
       <div className="max-w-7xl mx-auto flex items-center justify-between">
         <div className="text-2xl font-serif font-medium">
-          404 Found Us
+          404 Found
         </div>
         
         <div className="hidden md:flex items-center gap-12">

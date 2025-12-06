@@ -14,7 +14,7 @@ const playfair = Playfair_Display({
 });
 
 export const metadata: Metadata = {
-  title: "404 Found Us | Web Design Agency",
+  title: "404 Found | Web Design Agency",
   description: "A boutique web design agency crafting digital experiences with purpose and precision.",
 };
 

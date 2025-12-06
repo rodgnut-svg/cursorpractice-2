@@ -1,9 +1,10 @@
 "use client";
 
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import { Image as ImageIcon, Globe } from "lucide-react";
+import { Image as ImageIcon, Globe, ExternalLink } from "lucide-react";
 import Image from "next/image";
 import { useState } from "react";
+import { Button } from "@/components/ui/button";
 
 interface DesignPreviewModalProps {
   isOpen: boolean;
@@ -71,14 +72,19 @@ export default function DesignPreviewModal({
         
         <div className="overflow-y-auto" style={{ height: 'calc(90vh - 140px)' }}>
           {viewMode === "live" && websiteUrl ? (
-            <div className="w-full h-full">
-              <iframe
-                src={websiteUrl}
-                className="w-full h-full border-0"
-                style={{ minHeight: 'calc(90vh - 140px)' }}
-                title={`${title} website preview`}
-                sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-popups-to-escape-sandbox"
-              />
+            <div className="w-full h-full flex flex-col items-center justify-center p-12 text-center">
+              <Globe className="h-16 w-16 text-muted-foreground mb-4" />
+              <h3 className="text-xl font-serif mb-2">Live Preview Unavailable</h3>
+              <p className="text-muted-foreground mb-6 max-w-md">
+                This website doesn't allow embedding. Click the button below to view it in a new tab.
+              </p>
+              <Button
+                onClick={() => window.open(websiteUrl, '_blank', 'noopener,noreferrer')}
+                className="flex items-center gap-2"
+              >
+                <ExternalLink className="h-4 w-4" />
+                Open Website
+              </Button>
             </div>
           ) : (
             <div className="space-y-6 p-6">
