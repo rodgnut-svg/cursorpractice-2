@@ -1,5 +1,12 @@
 import type { Metadata } from "next";
+import { Gilda_Display } from 'next/font/google';
 import "./globals.css";
+
+const gildaDisplay = Gilda_Display({ 
+  weight: ['400'],
+  subsets: ['latin'],
+  variable: '--font-gilda',
+});
 
 export const metadata: Metadata = {
   title: "Loft Mobile Golf Studio | Premium Golf Simulator Experience",
@@ -12,7 +19,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" className={gildaDisplay.variable}>
       <body>{children}</body>
     </html>
   );
