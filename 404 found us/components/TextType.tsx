@@ -173,7 +173,7 @@ const TextType = ({
 
     if (!isVisible) return;
 
-    let timeout;
+    let timeout: NodeJS.Timeout;
 
     const currentText = textArray[currentTextIndex];
 
