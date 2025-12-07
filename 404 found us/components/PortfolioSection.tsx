@@ -42,8 +42,7 @@ export default function PortfolioSection() {
   
   const { scrollYProgress } = useScroll({
     target: targetRef,
-    offset: ["start start", "end end"],
-    layoutEffect: false
+    offset: ["start start", "end end"]
   });
   
   // Calculate transform based on number of items
