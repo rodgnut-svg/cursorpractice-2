@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef, useState, createElement, useMemo, useCallback } from 'react';
+import React, { useEffect, useRef, useState, createElement, useMemo, useCallback } from 'react';
 
 import { gsap } from 'gsap';
 
@@ -8,7 +8,7 @@ import './TextType.css';
 
 interface TextTypeProps {
   text: string | string[];
-  as?: keyof JSX.IntrinsicElements;
+  as?: keyof React.JSX.IntrinsicElements;
   typingSpeed?: number;
   initialDelay?: number;
   pauseDuration?: number;
