@@ -35,3 +35,6 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
+# Note: React Bits registry components (components.json and components/*) should be tracked in git
+# Do not add patterns that would ignore these files
+
