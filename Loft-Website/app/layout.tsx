@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Gilda_Display } from 'next/font/google';
 import "./globals.css";
+import "./card-nav.css";
 
 const gildaDisplay = Gilda_Display({ 
   weight: ['400'],
