@@ -1,0 +1,198 @@
+[00:00:00.985] Server  LOG      ✓ Ready in 726ms
+[00:00:09.138] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:00:09.251] Browser ERROR   A tree hydrated but some attributes of the server rendered HTML didn't match the client properties. This won't be patched up. This can happen if a SSR-ed Client Component used:
+
+- A server/client branch `if (typeof window !== 'undefined')`.
+- Variable input such as `Date.now()` or `Math.random()` which changes each time it's called.
+- Date formatting in a user's locale which doesn't match the server.
+- External changing data without sending a snapshot of it along with the HTML.
+- Invalid HTML tag nesting.
+
+It can also happen if the client has a browser extension installed which messes with the HTML before React loaded.
+
+%s%s https://react.dev/link/hydration-mismatch 
+
+  ...
+    <InnerScrollAndFocusHandler segmentPath={[...]} focusAndScrollRef={{apply:false, ...}}>
+      <ErrorBoundary errorComponent={undefined} errorStyles={undefined} errorScripts={undefined}>
+        <LoadingBoundary name="/" loading={null}>
+          <HTTPAccessFallbackBoundary notFound={<SegmentViewNode>} forbidden={undefined} unauthorized={undefined}>
+            <HTTPAccessFallbackErrorBoundary pathname="/" notFound={<SegmentViewNode>} forbidden={undefined} ...>
+              <RedirectBoundary>
+                <RedirectErrorBoundary router={{...}}>
+                  <InnerLayoutRouter url="/" tree={[...]} params={{}} cacheNode={{lazyData:null, ...}} ...>
+                    <SegmentViewNode type="page" pagePath="/404 found...">
+                      <SegmentTrieNode>
+                      <ClientPageRoot Component={function Home} serverProvidedParams={{...}}>
+                        <Home params={Promise} searchParams={Promise}>
+                          <div className="min-h-scre...">
+                            <PillNav>
+                            <main className="relative">
+                              ...
+                                <div className="flex-1 spa...">
+                                  <h1>
+                                  <p>
+                                  <div className="pt-4">
+                                    <_c size="lg" className="text-base ...">
+                                      <button
+                                        className="inline-flex items-center justify-center whitespace-nowrap font-medi..."
+                                        ref={null}
+-                                       data-cursor-ref="ref-wpvycjrzz2p"
+                                      >
+                              <div>
+                              <PortfolioSection>
+                                <section
+                                  ref={{current:null}}
+                                  id="work"
+                                  className="relative w-full h-[400vh]"
+-                                 data-cursor-ref="ref-gyejehb48vo"
+                                >
+                              <ContactSection>
+                                <section
+                                  id="contact"
+                                  className="w-full px-8 md:px-12 lg:px-16 py-24 md:py-32 lg:py-40"
+-                                 data-cursor-ref="ref-1t58y4nn4mo"
+                                >
+                                  <div
+                                    className="max-w-4xl mx-auto"
+-                                   data-cursor-ref="ref-kde7swcgxq"
+                                  >
+                                    <div
+                                      className="text-center space-y-12 md:space-y-16"
+-                                     data-cursor-ref="ref-qr9w9tvohx"
+                                    >
+                                      <div>
+                                      <div
+                                        className="max-w-xl mx-auto"
+-                                       data-cursor-ref="ref-vfgzw5qd6a"
+                                      >
+                                        <form
+                                          className="space-y-6"
+-                                         data-cursor-ref="ref-xjd5yb497u"
+                                        >
+                                          <div
+                                            className="space-y-2 text-left"
+-                                           data-cursor-ref="ref-o4sy2qqkzim"
+                                          >
+                                            <_c htmlFor="name" className="text-sm">
+                                              <Label ref={null} className="font-mediu..." htmlFor="name">
+                                                <Primitive.label className="font-mediu..." htmlFor="name" ref={null} ...>
+                                                  <label
+                                                    className="font-medium peer-disabled:cursor-not-allowed peer-disab..."
+                                                    htmlFor="name"
+                                                    onMouseDown={function onMouseDown}
+                                                    ref={null}
+-                                                   data-cursor-ref="ref-6tcpj4n832i"
+                                                  >
++                                                   Name
+                                            <_c id="name" type="text" placeholder="Your name" className="h-12 round...">
+                                              <input
+                                                type="text"
+                                                className="flex w-full border bg-background px-3 py-2 text-sm ring-off..."
+                                                ref={null}
+                                                id="name"
+                                                placeholder="Your name"
+-                                               data-cursor-ref="ref-08nc5tzjmr14"
+                                              >
+                                          <div
+                                            className="space-y-2 text-left"
+-                                           data-cursor-ref="ref-v3se7mwns5b"
+                                          >
+                                            <_c htmlFor="email" className="text-sm">
+                                              <Label ref={null} className="font-mediu..." htmlFor="email">
+                                                <Primitive.label className="font-mediu..." htmlFor="email" ref={null} ...>
+                                                  <label
+                                                    className="font-medium peer-disabled:cursor-not-allowed peer-disab..."
+                                                    htmlFor="email"
+                                                    onMouseDown={function onMouseDown}
+                                                    ref={null}
+-                                                   data-cursor-ref="ref-p6vhahm0nlm"
+                                                  >
++                                                   Email
+                                            <_c id="email" type="email" placeholder="your@email..." ...>
+                                              <input
+                                                type="email"
+                                                className="flex w-full border bg-background px-3 py-2 text-sm ring-off..."
+                                                ref={null}
+                                                id="email"
+                                                placeholder="your@email.com"
+-                                               data-cursor-ref="ref-kogje86srv"
+                                              >
+                                          <div
+                                            className="space-y-2 text-left"
+-                                           data-cursor-ref="ref-d0kv176ttcj"
+                                          >
+                                            <_c htmlFor="message" className="text-sm">
+                                              <Label ref={null} className="font-mediu..." htmlFor="message">
+                                                <Primitive.label className="font-mediu..." htmlFor="message" ref={null} ...>
+                                                  <label
+                                                    className="font-medium peer-disabled:cursor-not-allowed peer-disab..."
+                                                    htmlFor="message"
+                                                    onMouseDown={function onMouseDown}
+                                                    ref={null}
+-                                                   data-cursor-ref="ref-c77xqo1kw8g"
+                                                  >
++                                                   Message
+                                            <textarea
+                                              id="message"
+                                              rows={5}
+                                              placeholder="Tell us about your project..."
+                                              className="w-full px-3 py-2 rounded-sm border border-border focus:outlin..."
+-                                             data-cursor-ref="ref-810kaw2r0dx"
+                                            >
+                                          <div
+                                            className="pt-4"
+-                                           data-cursor-ref="ref-5va1hjpm5pq"
+                                          >
+                                            <_c type="submit" size="lg" className="w-full tex...">
+                                              <button
+                                                className="inline-flex items-center justify-center whitespace-nowrap f..."
+                                                ref={null}
+                                                type="submit"
+-                                               data-cursor-ref="ref-4teh3u2wwn3"
+                                              >
++                                               Send message
+                            <Footer>
+                              <footer
+                                className="w-full px-8 md:px-12 lg:px-16 py-12 border-t border-border"
+-                               data-cursor-ref="ref-6wpj6w034pr"
+                              >
+                                <div
+                                  className="max-w-6xl mx-auto"
+-                                 data-cursor-ref="ref-uk1nxd3bszb"
+                                >
+                                  <div
+                                    className="flex flex-col md:flex-row justify-between items-center gap-6"
+-                                   data-cursor-ref="ref-ien5orbgu9o"
+                                  >
+                                    <div>
+                                    <div
+                                      className="flex items-center gap-8"
+-                                     data-cursor-ref="ref-voj0vzycbpk"
+                                    >
+                                      <a
+                                        href="#"
+                                        className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+-                                       data-cursor-ref="ref-vd0dnjsnzwd"
+                                      >
++                                       LinkedIn
+                                      <a
+                                        href="#"
+                                        className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+-                                       data-cursor-ref="ref-6j0mcdt6hwu"
+                                      >
++                                       Twitter
+                                      <a
+                                        href="#"
+                                        className="text-sm text-muted-foreground hover:text-foreground transition-colors"
+-                                       data-cursor-ref="ref-xgjixp5s7nm"
+                                      >
++                                       Instagram
+                    ...
+                  ...
+      ...
+
+[00:00:09.492] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:00:09.985] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:00:29.203] Browser INFO    %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold
+[00:01:16.363] Server  LOG      ✓ Compiled in 0ms
