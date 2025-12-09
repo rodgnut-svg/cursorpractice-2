@@ -42,7 +42,7 @@ export default function PortfolioSection() {
   
   const { scrollYProgress } = useScroll({
     target: targetRef,
-    offset: ["start start", "end end"]
+    offset: ["start end", "end start"]
   });
   
   // Calculate transform based on number of items
@@ -51,7 +51,7 @@ export default function PortfolioSection() {
 
   return (
     <>
-      <section ref={targetRef} id="work" className="relative w-full h-[400vh]">
+      <section ref={targetRef} id="work" className="relative w-full h-[600vh] md:h-[400vh]">
         <div className="sticky top-0 h-screen flex flex-col justify-center overflow-hidden">
           <div className="px-8 md:px-12 lg:px-16 mb-16">
             <div className="max-w-7xl mx-auto">
