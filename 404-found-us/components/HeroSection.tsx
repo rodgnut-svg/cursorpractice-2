@@ -38,7 +38,7 @@ export default function HeroSection() {
             </div>
           </div>
           
-          <div className="w-full md:w-auto md:flex-shrink-0 flex items-center justify-center md:justify-end">
+          <div className="hidden md:flex w-full md:w-auto md:flex-shrink-0 items-center justify-center md:justify-end">
             <div className="w-40 h-40 md:w-48 md:h-48 lg:w-64 lg:h-64">
               <Cubes 
                 gridSize={10}
