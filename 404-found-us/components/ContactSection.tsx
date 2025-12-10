@@ -6,7 +6,7 @@ import { Label } from "@/components/ui/label";
 
 export default function ContactSection() {
   return (
-    <section id="contact" className="w-full px-8 md:px-12 lg:px-16 py-24 md:py-32 lg:py-40">
+    <section id="contact" className="w-full px-8 md:px-12 lg:px-16 pt-16 md:pt-24 pb-24 md:pb-32 lg:pb-40">
       <div className="max-w-4xl mx-auto">
         <div className="text-center space-y-12 md:space-y-16">
           <div className="space-y-6">

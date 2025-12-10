@@ -3,7 +3,6 @@
 import { useState, useEffect, useRef } from "react";
 import Image from "next/image";
 import DesignPreviewModal from "@/components/DesignPreviewModal";
-import ScrollStack, { ScrollStackItem } from "@/components/reactbits/ScrollStack";
 
 const projects = [
   {
@@ -41,9 +40,12 @@ export default function PortfolioSection() {
   const iframeContainerRefs = useRef<Record<number, HTMLDivElement | null>>({});
 
   useEffect(() => {
-    const checkIfCentered = (index: number) => {
+    let rafId: number | null = null;
+    let ticking = false;
+
+    const checkIfCentered = (index: number): boolean | undefined => {
       const iframeContainer = iframeContainerRefs.current[index];
-      if (!iframeContainer) return;
+      if (!iframeContainer) return undefined;
 
       const rect = iframeContainer.getBoundingClientRect();
       const viewportHeight = window.innerHeight;
@@ -54,35 +56,56 @@ export default function PortfolioSection() {
       const distanceFromCenter = Math.abs(elementCenter - viewportCenter);
       const threshold = 100;
       
-      const isCentered = distanceFromCenter < threshold && rect.top < viewportCenter && rect.bottom > viewportCenter;
-      
-      setIframeCenteredStates(prev => ({
-        ...prev,
-        [index]: isCentered
-      }));
+      return distanceFromCenter < threshold && rect.top < viewportCenter && rect.bottom > viewportCenter;
     };
 
-    const handleScroll = () => {
-      // Check all iframe containers
-      Object.keys(iframeContainerRefs.current).forEach(key => {
-        checkIfCentered(Number(key));
+    const updateStates = () => {
+      ticking = false;
+      setIframeCenteredStates(prev => {
+        const updates: Record<number, boolean> = { ...prev };
+        let hasChanges = false;
+
+        // Check all iframe containers and collect updates
+        Object.keys(iframeContainerRefs.current).forEach(key => {
+          const index = Number(key);
+          const isCentered = checkIfCentered(index);
+          if (isCentered !== undefined && prev[index] !== isCentered) {
+            updates[index] = isCentered;
+            hasChanges = true;
+          }
+        });
+
+        return hasChanges ? updates : prev;
       });
     };
 
-    const handleResize = () => {
-      handleScroll();
+    const handleScroll = () => {
+      if (!ticking) {
+        rafId = requestAnimationFrame(updateStates);
+        ticking = true;
+      }
     };
 
-    // Check on scroll and resize
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    window.addEventListener('resize', handleResize);
-    
+    const handleResize = () => {
+      if (!ticking) {
+        rafId = requestAnimationFrame(updateStates);
+        ticking = true;
+      }
+    };
+
     // Initial check
-    handleScroll();
+    updateStates();
+
+    // Check on scroll and resize with requestAnimationFrame throttling
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    window.addEventListener('resize', handleResize, { passive: true });
 
     return () => {
       window.removeEventListener('scroll', handleScroll);
       window.removeEventListener('resize', handleResize);
+      if (rafId !== null) {
+        cancelAnimationFrame(rafId);
+      }
     };
   }, []);
 
@@ -97,23 +120,14 @@ export default function PortfolioSection() {
           </div>
         </div>
 
-        <ScrollStack
-          className="px-8 md:px-12 lg:px-16"
-          itemDistance={200}
-          itemStackDistance={30}
-          stackPosition="20%"
-          baseScale={0.85}
-          rotationAmount={0}
-          blurAmount={0}
-          useWindowScroll={true}
-        >
+        <div className="px-8 md:px-12 lg:px-16">
           {projects.map((project, index) => {
             const hasLivePreview = index === 0 || index === 1 || index === 2; // All projects have live preview
             
             return (
-              <ScrollStackItem
+              <div
                 key={index}
-                className="mb-[200px] max-w-7xl mx-auto"
+                className={`${index === projects.length - 1 ? 'mb-16 md:mb-24' : 'mb-[200px]'} max-w-7xl mx-auto`}
               >
                 <div
                   className={`${hasLivePreview ? 'w-full max-w-none' : 'w-full md:w-[500px] lg:w-[600px]'} mx-auto ${!hasLivePreview ? 'group cursor-pointer' : ''}`}
@@ -128,14 +142,29 @@ export default function PortfolioSection() {
                             iframeContainerRefs.current[index] = el;
                           }
                         }}
-                        className="relative w-full h-[600px] md:h-[700px] lg:h-[800px] overflow-hidden"
+                        className="relative w-full h-[600px] md:h-[700px] lg:h-[800px] overflow-hidden will-change-transform rounded-[6px]"
+                        style={{ 
+                          transform: 'translateZ(0)',
+                          borderRadius: '6px',
+                          clipPath: 'inset(0 0 0 0 round 6px)'
+                        }}
                       >
                         <iframe
                           src={project.websiteUrl}
-                          className={`w-full h-full border-0 transition-opacity duration-300 ${iframeCenteredStates[index] ? 'pointer-events-auto' : 'pointer-events-none'}`}
+                          className={`w-full h-full border-0 ${iframeCenteredStates[index] ? 'pointer-events-auto' : 'pointer-events-none'}`}
                           title={`${project.title} Live Preview`}
                           scrolling="yes"
                           allowFullScreen
+                          style={{ 
+                            transform: 'translateZ(0)',
+                            backfaceVisibility: 'hidden',
+                            WebkitBackfaceVisibility: 'hidden',
+                            opacity: 1,
+                            willChange: 'auto',
+                            borderRadius: '6px',
+                            border: 'none',
+                            display: 'block'
+                          }}
                         />
                       </div>
                     ) : (
@@ -180,10 +209,10 @@ export default function PortfolioSection() {
                     </div>
                   </div>
                 </div>
-              </ScrollStackItem>
+              </div>
             );
           })}
-        </ScrollStack>
+        </div>
       </section>
 
       {/* Design Preview Modal */}
