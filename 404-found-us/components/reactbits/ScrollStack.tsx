@@ -66,58 +66,121 @@ export default function ScrollStack({
     }
 
     // Scroll handler
+    let scrollTicking = false
+    let scrollRafId: number | null = null
+
     const handleScroll = () => {
+      if (!useWindowScroll && scrollTicking) return
+      
+      if (useWindowScroll) {
+        if (!scrollTicking) {
+          scrollTicking = true
+          scrollRafId = requestAnimationFrame(() => {
+            scrollTicking = false
+            performScrollUpdate()
+          })
+        }
+      } else {
+        performScrollUpdate()
+      }
+    }
+
+    // Smooth easing functions
+    const easeOutCubic = (t: number): number => {
+      return 1 - Math.pow(1 - t, 3)
+    }
+
+    const easeInOutCubic = (t: number): number => {
+      return t < 0.5
+        ? 4 * t * t * t
+        : 1 - Math.pow(-2 * t + 2, 3) / 2
+    }
+
+    // Smooth step function for boundary transitions
+    const smoothStep = (edge0: number, edge1: number, x: number): number => {
+      const t = Math.max(0, Math.min(1, (x - edge0) / (edge1 - edge0)))
+      return t * t * (3 - 2 * t)
+    }
+
+    const performScrollUpdate = () => {
       const scrollY = useWindowScroll ? window.scrollY : lenisRef.current?.scroll || 0
       const viewportHeight = window.innerHeight
       const stackPositionValue = parseFloat(stackPosition) / 100
-      const scaleEndPositionValue = parseFloat(scaleEndPosition) / 100
       const stackTriggerY = scrollY + viewportHeight * stackPositionValue
 
       items.forEach((item, index) => {
         const rect = item.getBoundingClientRect()
         const itemTop = rect.top + scrollY
-        const itemBottom = itemTop + rect.height
         const itemCenter = itemTop + rect.height / 2
 
-        // Calculate if item has passed the stack position
-        const hasPassedStack = itemCenter < stackTriggerY
+        // Calculate distance from stack position (positive = past stack point, negative = before)
         const distanceFromStack = stackTriggerY - itemCenter
+        
+        // Use a smooth transition zone with a buffer to prevent jumps
+        const zoomInZone = itemDistance * 2.5
+        const bufferZone = itemDistance * 0.3 // Small buffer around zero for smooth transition
+        const normalizedDistance = distanceFromStack / itemDistance
 
-        if (hasPassedStack && distanceFromStack > 0) {
-          // Item is stacking - calculate stack position
-          const stackIndex = Math.floor(distanceFromStack / itemDistance)
-          const stackProgress = (distanceFromStack % itemDistance) / itemDistance
+        let scale: number
+        let translateY: number
+        let rotation: number
+        let blur: number
+
+        // Use a smooth transition around the boundary to prevent flashing
+        if (distanceFromStack < -bufferZone) {
+          // Item is approaching stack position - zooming in smoothly
+          const distanceToStack = Math.abs(distanceFromStack + bufferZone)
+          const effectiveZone = zoomInZone - bufferZone
+          const progress = Math.max(0, Math.min(1, distanceToStack / effectiveZone))
+          const easedProgress = easeInOutCubic(progress)
+          scale = baseScale + (1 - baseScale) * easedProgress
+          translateY = 0
+          rotation = 0
+          blur = 0
+        } else if (distanceFromStack > bufferZone) {
+          // Item has passed stack position - zooming out smoothly
+          const stackAmount = (distanceFromStack - bufferZone) / itemDistance
           
-          // Calculate scale based on stack position
-          const scale = baseScale + itemScale * stackIndex + (itemScale * stackProgress)
-          const clampedScale = Math.max(baseScale, Math.min(1, scale))
+          // Smooth, continuous scale reduction
+          const maxReduction = 1 - baseScale
+          const reductionProgress = Math.min(stackAmount * itemScale / maxReduction, 1)
+          const easedReduction = easeOutCubic(reductionProgress)
+          scale = 1 - (easedReduction * maxReduction)
+          scale = Math.max(baseScale, Math.min(1, scale))
 
-          // Calculate translate Y for stacking effect
-          const translateY = stackIndex * itemStackDistance + (stackProgress * itemStackDistance)
+          // Smooth translate Y
+          translateY = stackAmount * itemStackDistance
 
-          // Calculate rotation
-          const rotation = rotationAmount * (1 - clampedScale) / (1 - baseScale)
-
-          // Calculate blur
-          const blur = blurAmount * (1 - clampedScale) / (1 - baseScale)
-
-          // Apply transforms
-          item.style.transform = `translate3d(0, ${translateY}px, 0) scale(${clampedScale}) rotate(${rotation}deg)`
-          item.style.filter = `blur(${blur}px)`
+          // Calculate rotation and blur based on scale position
+          const scaleProgress = (1 - scale) / maxReduction
+          rotation = rotationAmount * scaleProgress
+          blur = blurAmount * scaleProgress
         } else {
-          // Item is not yet stacking - normal position
-          const distanceToStack = itemCenter - stackTriggerY
-          const scaleProgress = Math.max(0, Math.min(1, 1 - (distanceToStack / (itemDistance * 2))))
-          const scale = baseScale + (1 - baseScale) * scaleProgress
-
-          item.style.transform = `translate3d(0, 0, 0) scale(${scale}) rotate(0deg)`
-          item.style.filter = `blur(0px)`
+          // In the buffer zone - smoothly interpolate between zoom-in and zoom-out
+          // This prevents any discontinuity at the boundary
+          const bufferProgress = (distanceFromStack + bufferZone) / (bufferZone * 2)
+          const smoothedProgress = smoothStep(0, 1, bufferProgress)
+          
+          scale = 1.0 // At the boundary, scale should be 1
+          translateY = smoothedProgress * bufferZone * (itemStackDistance / itemDistance)
+          rotation = 0
+          blur = 0
         }
 
+        // Clamp values to prevent any extreme values
+        scale = Math.max(baseScale, Math.min(1, scale))
+        translateY = Math.max(0, translateY)
+
+        // Apply transforms - use translate3d for GPU acceleration
+        const transformString = `translate3d(0, ${translateY.toFixed(2)}px, 0) scale(${scale.toFixed(4)}) rotate(${rotation.toFixed(2)}deg)`
+        item.style.transform = transformString
+        item.style.filter = `blur(${blur.toFixed(2)}px)`
         item.style.willChange = 'transform, filter'
         item.style.transformOrigin = 'center top'
         item.style.backfaceVisibility = 'hidden'
         item.style.perspective = '1000px'
+        item.style.transition = 'none'
+        item.style.isolation = 'isolate'
       })
 
       // Check if stack is complete
@@ -148,6 +211,9 @@ export default function ScrollStack({
     return () => {
       if (useWindowScroll) {
         window.removeEventListener('scroll', handleScroll)
+        if (scrollRafId !== null) {
+          cancelAnimationFrame(scrollRafId)
+        }
       } else if (lenisRef.current) {
         lenisRef.current.destroy()
       }
