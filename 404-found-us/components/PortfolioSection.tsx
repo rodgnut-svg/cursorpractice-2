@@ -43,7 +43,7 @@ export default function PortfolioSection() {
       <section id="work" className="relative w-full py-24 md:py-32">
         <div className="px-8 md:px-12 lg:px-16">
           <div className="max-w-7xl mx-auto grid gap-12 lg:gap-16 lg:grid-cols-[320px_1fr]">
-            <div className="space-y-6 h-fit sticky top-32">
+            <div className="space-y-6 h-fit md:sticky md:top-32 relative z-10">
               <h2 className="text-3xl md:text-4xl lg:text-5xl font-serif font-bold uppercase leading-tight">
                 PORTFOLIO
               </h2>

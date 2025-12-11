@@ -55,5 +55,30 @@
   .text-balance {
     text-wrap: balance;
   }
+
+  .shake-hint {
+    animation: shake-hint 0.42s ease-in-out 1;
+    animation-delay: 0.2s;
+    animation-fill-mode: both;
+  }
+
+  .shake-hint:focus {
+    animation: none;
+  }
+
+  @keyframes shake-hint {
+    0% { transform: translate3d(0, 0, 0); }
+    20% { transform: translate3d(-3px, 0, 0); }
+    40% { transform: translate3d(3px, 0, 0); }
+    60% { transform: translate3d(-2px, 0, 0); }
+    80% { transform: translate3d(2px, 0, 0); }
+    100% { transform: translate3d(0, 0, 0); }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .shake-hint {
+      animation: none;
+    }
+  }
 }
 

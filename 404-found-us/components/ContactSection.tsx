@@ -1,67 +1,66 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-
 export default function ContactSection() {
   return (
     <section id="contact" className="w-full px-8 md:px-12 lg:px-16 pt-16 md:pt-24 pb-24 md:pb-32 lg:pb-40">
       <div className="max-w-4xl mx-auto">
-        <div className="text-center space-y-12 md:space-y-16">
-          <div className="space-y-6">
-            <h2 className="text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-serif leading-tight text-balance">
-              Let's create something
-              <br />
-              <span className="italic">extraordinary</span>.
+        <div className="space-y-12 md:space-y-16">
+          <div className="space-y-4 text-left">
+            <p className="text-sm uppercase tracking-[0.2em] text-muted-foreground">
+              Let's create
+            </p>
+            <h2 className="text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-serif leading-tight">
+              A fast way to start the conversation.
             </h2>
-            <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto">
-              Ready to transform your digital presence? Get in touch and let's start the conversation.
+          </div>
+
+          <div className="space-y-8 text-left text-2xl md:text-3xl lg:text-4xl leading-snug font-serif">
+            <p className="flex flex-wrap items-baseline gap-2">
+              <span>Hello, I am</span>
+              <input
+                aria-label="Your name"
+                type="text"
+                placeholder="your name"
+                className="shake-hint min-w-[140px] border-b border-muted bg-transparent px-2 py-1 text-muted-foreground placeholder:text-muted-foreground/80 focus:border-foreground focus:outline-none"
+              />
+              <span>, representing</span>
+              <input
+                aria-label="Your company"
+                type="text"
+                placeholder="your company"
+                className="shake-hint min-w-[140px] border-b border-muted bg-transparent px-2 py-1 text-muted-foreground placeholder:text-muted-foreground/80 focus:border-foreground focus:outline-none"
+              />
+              <span>.</span>
+            </p>
+
+            <p className="flex flex-wrap items-baseline gap-2">
+              <span>We would like to discuss a project —</span>
+              <input
+                aria-label="Describe your project"
+                type="text"
+                placeholder="describe your project…"
+                className="shake-hint min-w-[180px] border-b border-muted bg-transparent px-2 py-1 text-muted-foreground placeholder:text-muted-foreground/80 focus:border-foreground focus:outline-none"
+              />
+            </p>
+
+            <p className="flex flex-wrap items-baseline gap-2">
+              <span>Here is my phone number so you can contact me:</span>
+              <input
+                aria-label="Phone number"
+                type="tel"
+                placeholder="phone number"
+                className="shake-hint min-w-[160px] border-b border-muted bg-transparent px-2 py-1 text-muted-foreground placeholder:text-muted-foreground/80 focus:border-foreground focus:outline-none"
+              />
             </p>
           </div>
 
-          <div className="max-w-xl mx-auto">
-            <form className="space-y-6">
-              <div className="space-y-2 text-left">
-                <Label htmlFor="name" className="text-sm">Name</Label>
-                <Input 
-                  id="name" 
-                  type="text" 
-                  placeholder="Your name"
-                  className="h-12 rounded-sm border-border focus:ring-1 focus:ring-foreground"
-                />
-              </div>
-              
-              <div className="space-y-2 text-left">
-                <Label htmlFor="email" className="text-sm">Email</Label>
-                <Input 
-                  id="email" 
-                  type="email" 
-                  placeholder="your@email.com"
-                  className="h-12 rounded-sm border-border focus:ring-1 focus:ring-foreground"
-                />
-              </div>
-              
-              <div className="space-y-2 text-left">
-                <Label htmlFor="message" className="text-sm">Message</Label>
-                <textarea
-                  id="message"
-                  rows={5}
-                  placeholder="Tell us about your project..."
-                  className="w-full px-3 py-2 rounded-sm border border-border focus:outline-none focus:ring-1 focus:ring-foreground resize-none"
-                />
-              </div>
-
-              <div className="pt-4">
-                <Button 
-                  type="submit"
-                  size="lg"
-                  className="w-full text-base px-8 py-6 rounded-sm hover:opacity-90 transition-opacity"
-                >
-                  Send message
-                </Button>
-              </div>
-            </form>
+          <div className="pt-10 flex justify-center">
+            <button
+              type="button"
+              className="rounded-full bg-black px-8 py-4 text-base font-medium text-white shadow-lg transition hover:opacity-90"
+            >
+              Send message
+            </button>
           </div>
         </div>
       </div>
