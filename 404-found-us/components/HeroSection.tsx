@@ -1,13 +1,13 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, ArrowDown } from "lucide-react";
 import TextType from "@/components/TextType";
 import Cubes from "@/components/Cubes";
 
 export default function HeroSection() {
   return (
-    <section className="w-full px-8 md:px-12 lg:px-16 py-24 md:py-32 lg:py-40">
+    <section className="relative w-full px-8 md:px-12 lg:px-16 py-24 md:py-32 lg:py-40 min-h-[80vh]">
       <div className="max-w-7xl mx-auto">
         <div className="flex flex-col md:flex-row items-center md:items-end gap-8 md:gap-12">
           <div className="flex-1 space-y-8 md:space-y-12">
@@ -53,6 +53,14 @@ export default function HeroSection() {
           </div>
         </div>
       </div>
+
+      <a
+        href="#work"
+        aria-label="Scroll to portfolio"
+        className="absolute left-6 bottom-6 md:left-8 md:bottom-8 text-neutral-900 hover:text-neutral-700 transition-colors"
+      >
+        <ArrowDown className="h-6 w-6" strokeWidth={2.5} />
+      </a>
     </section>
   );
 }
