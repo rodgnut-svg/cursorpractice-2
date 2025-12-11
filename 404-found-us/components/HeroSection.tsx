@@ -14,9 +14,9 @@ export default function HeroSection() {
   };
 
   return (
-    <section className="relative w-full px-8 md:px-12 lg:px-16 py-24 md:py-32 lg:py-40 min-h-screen">
+    <section className="relative w-full px-8 md:px-12 lg:px-16 py-24 md:py-28 lg:py-32 min-h-screen md:min-h-[70vh] lg:min-h-[75vh]">
       <div className="max-w-7xl mx-auto">
-        <div className="flex min-h-[72vh] flex-col md:flex-row items-center md:items-end gap-8 md:gap-12">
+        <div className="flex min-h-[72vh] md:min-h-[60vh] flex-col md:flex-row items-center md:items-center gap-8 md:gap-12">
           <div className="flex-1 space-y-8 md:space-y-12">
             <h1 className="text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-serif font-bold leading-[1.1] text-balance">
               <TextType 
@@ -65,7 +65,7 @@ export default function HeroSection() {
         type="button"
         aria-label="Scroll to portfolio"
         onClick={handleScrollToWork}
-        className="absolute left-6 bottom-6 md:left-8 md:bottom-8 text-neutral-900 hover:text-neutral-700 transition-colors animate-bounce motion-reduce:animate-none"
+        className="absolute left-6 bottom-6 md:left-8 md:bottom-8 text-neutral-900 hover:text-neutral-700 transition-colors animate-bounce motion-reduce:animate-none md:hidden"
       >
         <ArrowDown className="h-6 w-6" strokeWidth={2.5} />
       </button>
