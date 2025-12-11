@@ -43,7 +43,7 @@ export default function Navigation() {
   return (
     <nav className="w-full py-8 px-8 md:px-12 lg:px-16">
       <div className="max-w-7xl mx-auto flex items-center justify-between">
-        <div className="text-2xl font-serif font-medium">
+        <div className="text-2xl font-serif font-bold uppercase">
           404 Found
         </div>
         
@@ -96,7 +96,7 @@ export default function Navigation() {
       {isMenuOpen && (
         <div className="fixed inset-0 z-50 bg-neutral-50 text-neutral-900">
           <div className="flex items-center justify-between px-8 py-8">
-            <div className="text-2xl font-serif font-medium">
+            <div className="text-2xl font-serif font-bold uppercase">
               404 Found
             </div>
             <button
