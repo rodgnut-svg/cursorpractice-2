@@ -37,6 +37,11 @@ export default function ScrollStack({
   const containerRef = useRef<HTMLDivElement>(null)
   const lenisRef = useRef<Lenis | null>(null)
   const itemsRef = useRef<HTMLElement[]>([])
+  const cachedItemsRef = useRef<{ top: number; height: number }[]>([])
+  const itemsStateRef = useRef<
+    { current: { scale: number; translateY: number; rotation: number; blur: number }; target: { scale: number; translateY: number; rotation: number; blur: number } }[]
+  >([])
+  const animationFrameRef = useRef<number | null>(null)
 
   useEffect(() => {
     if (!containerRef.current) return
@@ -44,6 +49,60 @@ export default function ScrollStack({
     const container = containerRef.current
     const items = Array.from(container.querySelectorAll('[data-scroll-stack-item]')) as HTMLElement[]
     itemsRef.current = items
+
+    // Cache item positions (needs to be relative to document/scroll)
+    const updateCachedPositions = () => {
+      const scrollY = window.scrollY || window.pageYOffset
+      cachedItemsRef.current = items.map(item => {
+        // Reset transform temporarily to get accurate metrics? 
+        // Or just use offsetTop logic. 
+        // safest is offsetTop relative to container + container position, 
+        // but container might move. 
+        // Actually, simple getBoundingClientRect + scrollY is accurate ONLY if transform is 0.
+        // But we are in a loop. 
+        // Solution: Parse existing transform or assume 0 on first run?
+        // Better: Use item.offsetTop which is relatively stable if parent is stable.
+        const rect = item.getBoundingClientRect()
+        // We need to account for current transform if any.
+        // A simple way is to use offsetTop relative to the document body if possible.
+        // Let's rely on resizing resetting things or just calculating once before loop.
+
+        // Actually, item.offsetTop is stable regarding transforms on the element itself.
+        // We need global top.
+        // Global Top = item.getBoundingClientRect().top + scrollY - (currentTranslateY)
+        // This is complex.
+
+        // Simpler: Just use container.getBoundingClientRect().top + scrollY + item.offsetTop
+        // Assuming container is the offsetParent or close to it.
+        // Let's assume standard flow.
+        return {
+          top: rect.top + scrollY, // Note: This might be slightly wrong if update run mid-scroll with transform.
+          // Correct fix: Use offsetTop accumulator.
+          // But for now, let's assume this runs on mount/resize (before heavy transforms).
+          height: rect.height
+        }
+      })
+
+      // More robust calculation:
+      let accumulatedTop = container.getBoundingClientRect().top + scrollY
+      if (items.length > 0) {
+        // Just recreate based on offsetTop relative to container
+        cachedItemsRef.current = items.map(item => {
+          return {
+            top: item.offsetTop + accumulatedTop, // Approximate global top
+            height: item.offsetHeight
+          }
+        })
+      }
+    }
+
+    updateCachedPositions()
+
+    // Initialize per-item animation state
+    itemsStateRef.current = items.map(() => ({
+      current: { scale: 1, translateY: 0, rotation: 0, blur: 0 },
+      target: { scale: 1, translateY: 0, rotation: 0, blur: 0 },
+    }))
 
     // Initialize Lenis smooth scroll
     if (!useWindowScroll) {
@@ -71,7 +130,7 @@ export default function ScrollStack({
 
     const handleScroll = () => {
       if (!useWindowScroll && scrollTicking) return
-      
+
       if (useWindowScroll) {
         if (!scrollTicking) {
           scrollTicking = true
@@ -109,13 +168,17 @@ export default function ScrollStack({
       const stackTriggerY = scrollY + viewportHeight * stackPositionValue
 
       items.forEach((item, index) => {
-        const rect = item.getBoundingClientRect()
-        const itemTop = rect.top + scrollY
-        const itemCenter = itemTop + rect.height / 2
+        const cached = cachedItemsRef.current[index]
+        if (!cached) return
+        const state = itemsStateRef.current[index]
+        if (!state) return
+
+        const itemTop = cached.top
+        const itemCenter = itemTop + cached.height / 2
 
         // Calculate distance from stack position (positive = past stack point, negative = before)
         const distanceFromStack = stackTriggerY - itemCenter
-        
+
         // Use a smooth transition zone with a buffer to prevent jumps
         const zoomInZone = itemDistance * 2.5
         const bufferZone = itemDistance * 0.3 // Small buffer around zero for smooth transition
@@ -140,7 +203,7 @@ export default function ScrollStack({
         } else if (distanceFromStack > bufferZone) {
           // Item has passed stack position - zooming out smoothly
           const stackAmount = (distanceFromStack - bufferZone) / itemDistance
-          
+
           // Smooth, continuous scale reduction
           const maxReduction = 1 - baseScale
           const reductionProgress = Math.min(stackAmount * itemScale / maxReduction, 1)
@@ -160,9 +223,10 @@ export default function ScrollStack({
           // This prevents any discontinuity at the boundary
           const bufferProgress = (distanceFromStack + bufferZone) / (bufferZone * 2)
           const smoothedProgress = smoothStep(0, 1, bufferProgress)
-          
+
+
           scale = 1.0 // At the boundary, scale should be 1
-          translateY = smoothedProgress * bufferZone * (itemStackDistance / itemDistance)
+          translateY = 0 // Keep strictly at 0 in buffer to match both adjacent zones perfectly
           rotation = 0
           blur = 0
         }
@@ -171,17 +235,47 @@ export default function ScrollStack({
         scale = Math.max(baseScale, Math.min(1, scale))
         translateY = Math.max(0, translateY)
 
-        // Apply transforms - use translate3d for GPU acceleration
-        const transformString = `translate3d(0, ${translateY.toFixed(2)}px, 0) scale(${scale.toFixed(4)}) rotate(${rotation.toFixed(2)}deg)`
-        item.style.transform = transformString
-        item.style.filter = `blur(${blur.toFixed(2)}px)`
-        item.style.willChange = 'transform, filter'
-        item.style.transformOrigin = 'center top'
-        item.style.backfaceVisibility = 'hidden'
-        item.style.perspective = '1000px'
-        item.style.transition = 'none'
-        item.style.isolation = 'isolate'
+        // Cache targets for the animation loop
+        state.target.scale = scale
+        state.target.translateY = translateY
+        state.target.rotation = rotation
+        state.target.blur = blur
       })
+
+      // Kick the animation loop
+      if (!animationFrameRef.current) {
+        const animate = () => {
+          items.forEach((item, index) => {
+            const state = itemsStateRef.current[index]
+            if (!state) return
+
+            const lerp = (start: number, end: number, factor: number) => start + (end - start) * factor
+            state.current.scale = lerp(state.current.scale, state.target.scale, 0.16)
+            state.current.translateY = lerp(state.current.translateY, state.target.translateY, 0.16)
+            state.current.rotation = lerp(state.current.rotation, state.target.rotation, 0.16)
+            state.current.blur = lerp(state.current.blur, state.target.blur, 0.16)
+
+            const { scale, translateY, rotation, blur } = state.current
+            const transformString = `translate3d(0, ${translateY.toFixed(2)}px, 0) scale(${scale.toFixed(4)}) rotate(${rotation.toFixed(2)}deg)`
+            item.style.transform = transformString
+            if (blur > 0.01) {
+              item.style.filter = `blur(${blur.toFixed(2)}px)`
+            } else {
+              item.style.filter = 'none'
+            }
+            item.style.willChange = 'transform'
+            item.style.transformOrigin = 'center top'
+            item.style.backfaceVisibility = 'hidden'
+            item.style.perspective = '1000px'
+            item.style.transition = 'none'
+            item.style.isolation = 'isolate'
+          })
+
+          animationFrameRef.current = requestAnimationFrame(animate)
+        }
+
+        animationFrameRef.current = requestAnimationFrame(animate)
+      }
 
       // Check if stack is complete
       if (onStackComplete) {
@@ -216,6 +310,10 @@ export default function ScrollStack({
         }
       } else if (lenisRef.current) {
         lenisRef.current.destroy()
+      }
+      if (animationFrameRef.current) {
+        cancelAnimationFrame(animationFrameRef.current)
+        animationFrameRef.current = null
       }
     }
   }, [
