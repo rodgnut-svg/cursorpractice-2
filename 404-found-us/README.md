@@ -33,4 +33,19 @@ npm run build
 npm start
 ```
 
+## Environment Variables
+
+Create a `.env.local` file in the root directory with the following variables:
+
+```env
+# GoHighLevel Webhook Configuration
+# The webhook URL for GoHighLevel form submissions
+GOHIGHLEVEL_WEBHOOK_URL=https://services.leadconnectorhq.com/hooks/d31VoHRqFQkp8xwPkN21/webhook-trigger/282b20c1-0383-419d-aeff-9d7185b29615
+
+# Optional: API key for GoHighLevel authentication (if required)
+# GOHIGHLEVEL_API_KEY=your_api_key_here
+```
+
+The webhook URL is set to the default provided, but you can override it with the environment variable if needed.
+
 
