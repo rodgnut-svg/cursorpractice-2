@@ -1,14 +1,18 @@
 "use client";
 
 import { useState, FormEvent } from "react";
+import CountrySelector from "./CountrySelector";
+import { type CountryCode, defaultCountryCode } from "@/lib/countryCodes";
 
 export default function ContactSection() {
   const [formData, setFormData] = useState({
     name: "",
     company: "",
     project: "",
-    phone: "",
+    whatsapp: "",
+    email: "",
   });
+  const [selectedCountry, setSelectedCountry] = useState<CountryCode>(defaultCountryCode);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitStatus, setSubmitStatus] = useState<{
     type: "success" | "error" | null;
@@ -27,10 +31,20 @@ export default function ContactSection() {
     e.preventDefault();
 
     // Basic validation
-    if (!formData.name.trim() || !formData.company.trim() || !formData.project.trim() || !formData.phone.trim()) {
+    if (!formData.name.trim() || !formData.company.trim() || !formData.project.trim() || !formData.whatsapp.trim() || !formData.email.trim()) {
       setSubmitStatus({
         type: "error",
         message: "Please fill in all fields.",
+      });
+      return;
+    }
+
+    // Email validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(formData.email.trim())) {
+      setSubmitStatus({
+        type: "error",
+        message: "Please enter a valid email address.",
       });
       return;
     }
@@ -39,12 +53,18 @@ export default function ContactSection() {
     setSubmitStatus({ type: null, message: "" });
 
     try {
+      // Combine country code with WhatsApp number
+      const whatsappWithCountryCode = `${selectedCountry.dialCode}${formData.whatsapp.replace(/\D/g, "")}`;
+      
       const response = await fetch("/api/contact", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(formData),
+        body: JSON.stringify({
+          ...formData,
+          whatsapp: whatsappWithCountryCode,
+        }),
       });
 
       const data = await response.json();
@@ -59,8 +79,10 @@ export default function ContactSection() {
           name: "",
           company: "",
           project: "",
-          phone: "",
+          whatsapp: "",
+          email: "",
         });
+        setSelectedCountry(defaultCountryCode);
       } else {
         setSubmitStatus({
           type: "error",
@@ -129,16 +151,35 @@ export default function ContactSection() {
                 />
               </p>
 
+              <div className="flex flex-wrap items-baseline gap-2">
+                <span>Here is my whatsapp number:</span>
+                <div className="flex items-baseline gap-2">
+                  <CountrySelector
+                    value={selectedCountry}
+                    onChange={setSelectedCountry}
+                  />
+                  <input
+                    aria-label="WhatsApp number"
+                    type="tel"
+                    placeholder="whatsapp number"
+                    value={formData.whatsapp}
+                    onChange={(e) => handleInputChange("whatsapp", e.target.value)}
+                    required
+                    className="shake-hint min-w-[160px] border-b border-muted bg-transparent px-2 py-1 text-[#0077B6] caret-[#0077B6] placeholder:text-muted-foreground/80 focus:border-[#0077B6] focus:outline-none"
+                  />
+                </div>
+              </div>
+
               <p className="flex flex-wrap items-baseline gap-2">
-                <span>Here is my phone number so you can contact me:</span>
+                <span>and your email</span>
                 <input
-                  aria-label="Phone number"
-                  type="tel"
-                  placeholder="phone number"
-                  value={formData.phone}
-                  onChange={(e) => handleInputChange("phone", e.target.value)}
+                  aria-label="Your email"
+                  type="email"
+                  placeholder="your email"
+                  value={formData.email}
+                  onChange={(e) => handleInputChange("email", e.target.value)}
                   required
-                  className="shake-hint min-w-[160px] border-b border-muted bg-transparent px-2 py-1 text-[#0077B6] caret-[#0077B6] placeholder:text-muted-foreground/80 focus:border-[#0077B6] focus:outline-none"
+                  className="shake-hint min-w-[180px] border-b border-muted bg-transparent px-2 py-1 text-[#0077B6] caret-[#0077B6] placeholder:text-muted-foreground/80 focus:border-[#0077B6] focus:outline-none"
                 />
               </p>
             </div>

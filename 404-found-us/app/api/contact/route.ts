@@ -5,18 +5,28 @@ const FIELD_MAPPING = {
   name: "firstName", // or "name" if GoHighLevel expects that
   company: "companyName", // or "company"
   project: "message", // or "description" or custom field name
-  phone: "phone",
+  whatsapp: "phone", // WhatsApp number with country code
+  email: "email", // Email address
 };
 
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { name, company, project, phone } = body;
+    const { name, company, project, whatsapp, email } = body;
 
     // Validate required fields
-    if (!name || !company || !project || !phone) {
+    if (!name || !company || !project || !whatsapp || !email) {
       return NextResponse.json(
         { success: false, message: "All fields are required." },
+        { status: 400 }
+      );
+    }
+
+    // Validate email format
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email.trim())) {
+      return NextResponse.json(
+        { success: false, message: "Please provide a valid email address." },
         { status: 400 }
       );
     }
@@ -24,14 +34,16 @@ export async function POST(request: NextRequest) {
     // Get webhook URL from environment variable
     const webhookUrl =
       process.env.GOHIGHLEVEL_WEBHOOK_URL ||
-      "https://services.leadconnectorhq.com/hooks/d31VoHRqFQkp8xwPkN21/webhook-trigger/282b20c1-0383-419d-aeff-9d7185b29615";
+      "https://services.leadconnectorhq.com/hooks/d31VoHRqFQkp8xwPkN21/webhook-trigger/CEqtpm0LlNYQwGZjowiN";
 
     // Map form fields to GoHighLevel payload format
+    // whatsapp already includes country code (e.g., "+1234567890")
     const payload = {
       [FIELD_MAPPING.name]: name.trim(),
       [FIELD_MAPPING.company]: company.trim(),
       [FIELD_MAPPING.project]: project.trim(),
-      [FIELD_MAPPING.phone]: phone.trim(),
+      [FIELD_MAPPING.whatsapp]: whatsapp.trim(),
+      [FIELD_MAPPING.email]: email.trim(),
     };
 
     // Prepare headers
