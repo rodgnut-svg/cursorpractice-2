@@ -14,12 +14,12 @@ export default function HeroSection() {
   };
 
   return (
-    <section className="relative w-full px-8 md:px-12 lg:px-16 py-24 md:py-28 lg:py-32 min-h-screen md:min-h-[70vh] lg:min-h-[75vh]">
-      <div className="max-w-7xl mx-auto">
-        <div className="flex min-h-[72vh] md:min-h-[60vh] flex-col md:flex-row items-center md:items-center gap-8 md:gap-12">
+    <section className="relative w-full px-8 md:px-12 lg:px-16 py-24 md:py-28 lg:py-32 min-h-dvh md:min-h-[70vh] lg:min-h-[75vh] flex flex-col justify-center">
+      <div className="max-w-7xl mx-auto w-full">
+        <div className="flex flex-col md:flex-row items-center md:items-center justify-center gap-8 md:gap-12 w-full">
           <div className="flex-1 space-y-8 md:space-y-12">
             <h1 className="text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-serif font-bold leading-[1.1] text-balance">
-              <TextType 
+              <TextType
                 text={["404 FOUND", "We Design", "We Build"]}
                 typingSpeed={75}
                 pauseDuration={1500}
@@ -29,14 +29,14 @@ export default function HeroSection() {
                 textClassNames={["font-bold uppercase", "", ""]}
               />
             </h1>
-            
+
             <p className="text-lg md:text-xl lg:text-2xl text-muted-foreground max-w-2xl leading-relaxed">
               We partner with ambitious brands to design and build websites that don't just look beautiful — they drive results.
             </p>
 
             <div className="pt-4">
-              <Button 
-                size="lg" 
+              <Button
+                size="lg"
                 className="text-base px-8 py-6 rounded-sm hover:opacity-90 transition-opacity"
               >
                 Start a conversation
@@ -44,10 +44,10 @@ export default function HeroSection() {
               </Button>
             </div>
           </div>
-          
+
           <div className="hidden md:flex w-full md:w-auto md:flex-shrink-0 items-center justify-center md:justify-end">
             <div className="w-40 h-40 md:w-48 md:h-48 lg:w-64 lg:h-64">
-              <Cubes 
+              <Cubes
                 gridSize={10}
                 faceColor="#1a0b2e"
                 borderStyle="1px solid rgba(0, 255, 255, 0.6)"
@@ -65,7 +65,7 @@ export default function HeroSection() {
         type="button"
         aria-label="Scroll to portfolio"
         onClick={handleScrollToWork}
-        className="absolute left-6 bottom-6 md:left-8 md:bottom-8 text-neutral-900 hover:text-neutral-700 transition-colors animate-bounce motion-reduce:animate-none md:hidden"
+        className="absolute left-6 bottom-6 md:left-8 md:bottom-8 text-neutral-900 hover:text-neutral-700 transition-colors animate-bounce motion-reduce:animate-none md:hidden z-10"
       >
         <ArrowDown className="h-6 w-6" strokeWidth={2.5} />
       </button>
