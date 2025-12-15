@@ -25,15 +25,6 @@ const projects = [
     image: "/portfolio/loft-golf.svg",
     images: [],
   },
-  {
-    title: "Les Benjamins Corporate Strategy Pitch",
-    category: "Corporate Strategy",
-    description: "Corporate strategy pitch presentation showcasing innovative business solutions and strategic planning.",
-    year: "2024",
-    websiteUrl: "https://www.lesbenjaminsgroup4.com",
-    image: "/portfolio/urban-collective.svg",
-    images: [],
-  },
 ];
 
 export default function PortfolioSection() {
@@ -66,7 +57,7 @@ export default function PortfolioSection() {
                 useWindowScroll={false} // Enable Lenis for smooth momentum scroll
               >
                 {projects.map((project, index) => {
-                  const hasLivePreview = index === 0 || index === 1 || index === 2; // All projects have live preview in original code logic
+                  const hasLivePreview = index === 0 || index === 1;
 
                   return (
                     <ScrollStackItem
