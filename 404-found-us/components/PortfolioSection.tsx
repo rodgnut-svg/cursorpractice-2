@@ -4,6 +4,7 @@ import { useState } from "react";
 import Image from "next/image";
 import DesignPreviewModal from "@/components/DesignPreviewModal";
 import ScrollStack, { ScrollStackItem } from "@/components/reactbits/ScrollStack";
+import { Button } from "@/components/ui/button";
 
 const projects = [
   {
@@ -129,10 +130,23 @@ export default function PortfolioSection() {
                             <p className="text-base text-muted-foreground leading-relaxed">
                               {project.description}
                             </p>
-                            <div className="pt-2">
+                            <div className="pt-2 flex items-center justify-between gap-4">
                               <span className="text-xs uppercase tracking-wider text-muted-foreground">
                                 {project.category}
                               </span>
+                              <Button
+                                asChild
+                                size="sm"
+                                className="shrink-0"
+                              >
+                                <a
+                                  href={project.websiteUrl}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                >
+                                  View live site
+                                </a>
+                              </Button>
                             </div>
                           </div>
                         </div>
