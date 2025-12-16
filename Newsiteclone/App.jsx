@@ -1355,36 +1355,7 @@ const StateOfSecurity = () => {
  * Interactive 3D orbital system displaying security optimization options
  */
 const RiskEcosystem = () => {
-  const containerRef = useRef(null);
-  const orbitGroupRef = useRef(null);
-  const nodesRef = useRef([]);
-  const rotationRef = useRef(0);
-  const [selectedNode, setSelectedNode] = useState(null);
-  const [hoveredNodeIndex, setHoveredNodeIndex] = useState(null);
   const [isMobile, setIsMobile] = useState(false);
-  const animationFrameRef = useRef(null);
-
-  // Premium monochrome refined color scheme
-  const colorScheme = {
-    nodeGradients: [
-      'radial-gradient(circle at 30% 30%, #1e293b 0%, #0f172a 50%, #020617 100%)',
-      'radial-gradient(circle at 30% 30%, #1e293b 0%, #0f172a 50%, #020617 100%)',
-      'radial-gradient(circle at 30% 30%, #1e293b 0%, #0f172a 50%, #020617 100%)',
-      'radial-gradient(circle at 30% 30%, #1e293b 0%, #0f172a 50%, #020617 100%)',
-      'radial-gradient(circle at 30% 30%, #1e293b 0%, #0f172a 50%, #020617 100%)',
-      'radial-gradient(circle at 30% 30%, #1e293b 0%, #0f172a 50%, #020617 100%)',
-      'radial-gradient(circle at 30% 30%, #1e293b 0%, #0f172a 50%, #020617 100%)',
-      'radial-gradient(circle at 30% 30%, #1e293b 0%, #0f172a 50%, #020617 100%)'
-    ],
-    nodeBorder: '#000000', // Black crisp border
-    nodeShadow: '0 2px 8px rgba(0, 0, 0, 0.3)',
-    nodeShadowHover: '0 4px 12px rgba(0, 0, 0, 0.4)',
-    orbitRingColor: 'rgba(94, 234, 212, 0.08)',
-    textColor: '#f8fafc', // Near-white for better contrast
-    labelBg: 'rgba(15, 23, 42, 0.95)',
-    labelBorder: 'rgba(94, 234, 212, 0.2)',
-    centerLabelGlow: '0 0 20px rgba(94, 234, 212, 0.15), 0 0 40px rgba(94, 234, 212, 0.08)'
-  };
 
   const iconSVG = (type) => {
     const icons = {
@@ -1404,22 +1375,7 @@ const RiskEcosystem = () => {
     { id: 0, icon: iconSVG('lock'), title: "Dynamic Risk Equilibrium", shortTitle: "Risk Equilibrium", description: "Balances threat activity, vulnerability criticality, and asset value through continuous optimization cycles that dynamically adjust risk prioritization to reflect evolving threat landscapes." },
     { id: 1, icon: iconSVG('chart'), title: "Exposure Management", shortTitle: "Exposure", description: "Threat-informed scenarios prioritize attack vectors by simulating adversary objectives and business impact outcomes, to focus and optimize mitigation efforts." },
     { id: 2, icon: iconSVG('gear'), title: "Control Efficacy Analysis", shortTitle: "Control Efficacy", description: "Provides recommendations and adaptively adjusts security configurations based on live environment telemetry and performance data to ensure controls remain effective against emerging risks and changing operational conditions." },
-    { id: 3, icon: iconSVG('globe'), title: "Holistic", shortTitle: "Holistic", description: "Extends across cloud, SaaS, AI systems, and legacy infrastructure wherever cyber risk is present, with unified analytics that continuously tune security controls and workflows." },
-    { id: 4, icon: iconSVG('target'), title: "Organizationally Aligned", shortTitle: "Org Aligned", description: "Translates technical risks into financial exposure metrics tied to growth targets, ensuring security efforts directly support measurable business outcomes." },
-    { id: 5, icon: iconSVG('trend'), title: "Stack Optimization", shortTitle: "Stack Opt", description: "Continuously tunes tool configurations and eliminates redundant capabilities by analyzing real-world effectiveness, maximizing the return on security investments." },
-    { id: 6, icon: iconSVG('robot'), title: "Agentic Risk Orchestration", shortTitle: "Orchestration", description: "Executes optimization workflows, validates control effectiveness, and autonomously responds to threats using evidence-based risk evaluations bound by risk appetite." },
-    { id: 7, icon: iconSVG('check'), title: "Effective Compliance", shortTitle: "Compliance", description: "Correlates control maturity and policy compliance directly to risk reduction, transforming compliance from a mere checkbox exercise into a measurable driver of the organization's security posture." }
-  ];
-
-  // Relationship mapping: [fromIndex, toIndex]
-  const relationships = [
-    [0, 1], // Risk Equilibrium → Exposure Management
-    [1, 2], // Exposure Management → Control Efficacy
-    [2, 7], // Control Efficacy → Compliance
-    [3, 0], [3, 1], [3, 2], [3, 4], [3, 5], [3, 6], [3, 7], // Holistic → all
-    [4, 0], [4, 1], // Org Aligned → Risk, Exposure
-    [5, 2], // Stack Opt → Control Efficacy
-    [6, 0], [6, 1], [6, 2], // Orchestration → Risk, Exposure, Control
+    { id: 3, icon: iconSVG('globe'), title: "Holistic", shortTitle: "Holistic", description: "Extends across cloud, SaaS, AI systems, and legacy infrastructure wherever cyber risk is present, with unified analytics that continuously tune security controls and workflows." }
   ];
 
   // Check if mobile
@@ -1432,312 +1388,54 @@ const RiskEcosystem = () => {
     return () => window.removeEventListener('resize', checkMobile);
   }, []);
 
-  // Initialize pure 2D CSS transform system
-  useEffect(() => {
-    if (!containerRef.current || isMobile) return;
-
-    const container = containerRef.current;
-    const width = container.clientWidth;
-    const height = container.clientHeight || 500;
-    const centerX = width / 2;
-    const centerY = height / 2;
-    const nodeRadius = Math.min(width, height) * 0.35; // Adaptive orbit radius based on container size
-
-    // Create orbit group container (for rotation) - pure 2D CSS
-    const orbitGroup = document.createElement('div');
-    orbitGroup.style.position = 'absolute';
-    orbitGroup.style.left = '50%';
-    orbitGroup.style.top = '50%';
-    orbitGroup.style.width = '1px';
-    orbitGroup.style.height = '1px';
-    orbitGroup.style.transformOrigin = '0 0';
-    container.appendChild(orbitGroup);
-    orbitGroupRef.current = orbitGroup;
-
-    // Use monochrome refined color scheme
-    const scheme = colorScheme; // colorScheme is the monochrome color scheme object
-
-    // Orbit ring removed per user request
-
-    // Create nodes array for tracking
-    const nodes = [];
-    const nodeElements = [];
-    const nodeLabels = [];
-
-    features.forEach((feature, index) => {
-      // Calculate initial position in circle
-      const angle = (index * Math.PI * 2) / 8;
-      const initialX = Math.cos(angle) * nodeRadius;
-      const initialY = Math.sin(angle) * nodeRadius;
-
-      // Create node element - premium clean styling
-      const nodeElement = document.createElement('div');
-      nodeElement.className = 'orbit-node';
-      nodeElement.style.position = 'absolute';
-      nodeElement.style.width = '120px';
-      nodeElement.style.height = '120px';
-      nodeElement.style.borderRadius = '50%';
-      nodeElement.style.background = scheme.nodeGradients[index % scheme.nodeGradients.length];
-      nodeElement.style.boxShadow = scheme.nodeShadow;
-      nodeElement.style.transform = `translate3d(${initialX}px, ${initialY}px, 0) translate(-50%, -50%)`;
-      nodeElement.style.cursor = 'pointer';
-      nodeElement.style.display = 'flex';
-      nodeElement.style.alignItems = 'center';
-      nodeElement.style.justifyContent = 'center';
-      nodeElement.style.padding = '0.5rem';
-      nodeElement.style.overflow = 'visible';
-      nodeElement.style.border = `2px solid ${scheme.nodeBorder}`;
-      nodeElement.dataset.nodeIndex = index;
-      nodeElement.dataset.shadowHover = scheme.nodeShadowHover;
-      nodeElement.dataset.shadowNormal = scheme.nodeShadow;
-
-      // Create text element that will counter-rotate to stay upright
-      const textElement = document.createElement('span');
-      textElement.textContent = feature.shortTitle;
-      textElement.style.color = scheme.textColor;
-      textElement.style.fontSize = '0.875rem';
-      textElement.style.fontWeight = '600';
-      textElement.style.textAlign = 'center';
-      textElement.style.lineHeight = '1.3';
-      textElement.style.wordWrap = 'break-word';
-      textElement.style.display = 'block';
-      textElement.style.transformOrigin = 'center center';
-      textElement.style.letterSpacing = '0.02em';
-      textElement.style.textShadow = '0 1px 2px rgba(0, 0, 0, 0.6)';
-      textElement.style.pointerEvents = 'none';
-      nodeElement.appendChild(textElement);
-
-      orbitGroup.appendChild(nodeElement);
-      nodeElements.push(nodeElement);
-
-      // Create HTML label for node - enhanced minimalist styling
-      const label = document.createElement('div');
-      label.className = 'risk-ecosystem-node-label';
-      label.textContent = feature.shortTitle;
-      label.style.position = 'absolute';
-      label.style.pointerEvents = 'none';
-      label.style.color = scheme.textColor;
-      label.style.fontSize = '0.95rem';
-      label.style.fontWeight = '600';
-      label.style.textAlign = 'center';
-      label.style.whiteSpace = 'nowrap';
-      label.style.opacity = '0';
-      label.style.display = 'none';
-      label.style.background = scheme.labelBg;
-      label.style.padding = '0.4rem 0.8rem';
-      label.style.borderRadius = '8px';
-      label.style.backdropFilter = 'blur(10px)';
-      label.style.border = `1px solid ${scheme.labelBorder}`;
-      label.style.textShadow = '0 1px 3px rgba(0, 0, 0, 0.9)';
-      label.style.transform = 'translate(-50%, -50%)';
-      label.style.zIndex = '20';
-      label.style.transition = 'opacity 0.3s cubic-bezier(0.4, 0, 0.2, 1)';
-      label.style.letterSpacing = '0.025em';
-      container.appendChild(label);
-      nodeLabels.push({ element: label, nodeIndex: index, initialX, initialY });
-
-      nodes.push({ element: nodeElement, feature: feature, index, initialX, initialY });
-    });
-    nodesRef.current = nodes;
-
-    // Mouse move handler for hover detection - pure 2D with throttling
-    let lastMouseMoveTime = 0;
-    const handleMouseMove = (event) => {
-      const now = performance.now();
-      // Throttle to ~60fps to avoid conflicts with animation loop
-      if (now - lastMouseMoveTime < 16) return;
-      lastMouseMoveTime = now;
-
-      const rect = container.getBoundingClientRect();
-      const mouseX = event.clientX - rect.left;
-      const mouseY = event.clientY - rect.top;
-
-      // Check which node is hovered (simple distance check)
-      let hoveredIndex = null;
-      nodes.forEach((node) => {
-        const nodeRect = node.element.getBoundingClientRect();
-        const nodeCenterX = nodeRect.left + nodeRect.width / 2 - rect.left;
-        const nodeCenterY = nodeRect.top + nodeRect.height / 2 - rect.top;
-        const distance = Math.sqrt(
-          Math.pow(mouseX - nodeCenterX, 2) + Math.pow(mouseY - nodeCenterY, 2)
-        );
-        if (distance < 60) {
-          hoveredIndex = node.index;
-        }
-      });
-      setHoveredNodeIndex(hoveredIndex);
-    };
-
-    // Click handler - pure 2D
-    const handleClick = (event) => {
-      const rect = container.getBoundingClientRect();
-      const mouseX = event.clientX - rect.left;
-      const mouseY = event.clientY - rect.top;
-
-      nodes.forEach((node) => {
-        const nodeRect = node.element.getBoundingClientRect();
-        const nodeCenterX = nodeRect.left + nodeRect.width / 2 - rect.left;
-        const nodeCenterY = nodeRect.top + nodeRect.height / 2 - rect.top;
-        const distance = Math.sqrt(
-          Math.pow(mouseX - nodeCenterX, 2) + Math.pow(mouseY - nodeCenterY, 2)
-        );
-        if (distance < 60) {
-          setSelectedNode(node.feature);
-        }
-      });
-    };
-
-    container.addEventListener('mousemove', handleMouseMove);
-    container.addEventListener('click', handleClick);
-
-    // Pure 2D animation loop - only rotateZ (clockwise)
-    const animate = () => {
-      animationFrameRef.current = requestAnimationFrame(animate);
-
-      // Clockwise rotation (negative for clockwise) - pure 2D rotateZ only
-      rotationRef.current -= 0.001;
-      const rotationDeg = (rotationRef.current * 180) / Math.PI;
-
-      // Apply only rotateZ transform
-      orbitGroup.style.transform = `rotate(${rotationDeg}deg)`;
-
-      // Update node positions based on rotation - pure translateX/translateY
-      nodes.forEach((node, index) => {
-        const angle = (index * Math.PI * 2) / 8 + rotationRef.current;
-        const x = Math.cos(angle) * nodeRadius;
-        const y = Math.sin(angle) * nodeRadius;
-
-        // Counter-rotate text inside node to keep it upright
-        const textElement = node.element.querySelector('span');
-        if (textElement) {
-          const counterRotationDeg = -(rotationRef.current * 180) / Math.PI;
-          textElement.style.transform = `rotate(${counterRotationDeg}deg)`;
-        }
-
-        // Update label positions
-        const labelData = nodeLabels[index];
-        if (labelData) {
-          const labelX = centerX + x;
-          const labelY = centerY + y;
-          labelData.element.style.left = `${labelX}px`;
-          labelData.element.style.top = `${labelY}px`;
-        }
-
-        // Only update position, let CSS handle hover effects
-        node.element.style.transform = `translate3d(${x}px, ${y}px, 0) translate(-50%, -50%)`;
-
-        // Update hover class without touching transform
-        if (hoveredNodeIndex === node.index) {
-          if (!node.element.classList.contains('is-hovered')) {
-            node.element.classList.add('is-hovered');
-          }
-        } else {
-          if (node.element.classList.contains('is-hovered')) {
-            node.element.classList.remove('is-hovered');
-          }
-        }
-
-        // Hide labels (only show on click)
-        if (labelData) {
-          labelData.element.style.display = 'none';
-          labelData.element.style.opacity = '0';
-        }
-      });
-    };
-    animate();
-
-    // Cleanup
-    return () => {
-      container.removeEventListener('mousemove', handleMouseMove);
-      container.removeEventListener('click', handleClick);
-      if (animationFrameRef.current) {
-        cancelAnimationFrame(animationFrameRef.current);
-      }
-      // Remove all created elements
-      nodeLabels.forEach((labelData) => {
-        if (labelData.element && labelData.element.parentNode) {
-          labelData.element.parentNode.removeChild(labelData.element);
-        }
-      });
-      if (orbitGroup && orbitGroup.parentNode) {
-        orbitGroup.parentNode.removeChild(orbitGroup);
-      }
-    };
-  }, [isMobile, hoveredNodeIndex]);
-
-  const hoveredNode = hoveredNodeIndex !== null ? features[hoveredNodeIndex] : null;
-
   return (
-    <section id="posture" className="section_posture">
-      <div className="global-padding padding-section-risk">
-        <div className="container-large">
-          <div className="posture-wrapper">
-            {isMobile ? (
-              <>
-                <div className="posture_heading animate">
-                  <div className="main-section-heading">
-                    <h2 className="heading-style-h2">Security Options</h2>
-                  </div>
-                </div>
-                <div className="posture_cards animate">
-                  {features.map((feature, index) => (
-                    <div key={index} className={`posture_card fade-in-${index + 1}`}>
-                      <div className="posture_card-icon" dangerouslySetInnerHTML={{ __html: feature.icon }}></div>
-                      <div className="posture_card-content">
-                        <h3 className="heading-style-h4">{feature.title}</h3>
-                        <p className="text-size-sm text-color-secondary">{feature.description}</p>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </>
-            ) : (
-              <>
-                <div className="posture-layout-desktop">
-                  <div className="posture-text-content">
-                    <h2 className="heading-style-h2">Security Options</h2>
-                    <p className="text-size-md text-color-secondary">
-                      Explore our comprehensive suite of security optimization capabilities designed to continuously reduce cyber risk and maximize the performance of your security infrastructure.
-                    </p>
-                    <div className="posture-features-grid">
-                      <div className="posture-feature-item">
-                        <Shield className="posture-feature-icon" size={20} strokeWidth={2} />
-                        <span className="posture-feature-text">Advanced Protection</span>
-                      </div>
-                      <div className="posture-feature-item">
-                        <Zap className="posture-feature-icon" size={20} strokeWidth={2} />
-                        <span className="posture-feature-text">Real-Time Response</span>
-                      </div>
-                      <div className="posture-feature-item">
-                        <Target className="posture-feature-icon" size={20} strokeWidth={2} />
-                        <span className="posture-feature-text">Precision Targeting</span>
-                      </div>
-                      <div className="posture-feature-item">
-                        <TrendingUp className="posture-feature-icon" size={20} strokeWidth={2} />
-                        <span className="posture-feature-text">Continuous Improvement</span>
-                      </div>
+    <div className="section_posture-wrapper">
+      <section id="posture" className="section_posture">
+        <div className="global-padding padding-section-risk">
+          <div className="container-large">
+            <div className="posture-wrapper">
+              {isMobile ? (
+                <>
+                  <div className="posture_heading animate">
+                    <div className="main-section-heading">
+                      <h2 className="heading-style-h2">Security Options</h2>
                     </div>
                   </div>
-                  <div className="risk-ecosystem-container" ref={containerRef}>
+                  <div className="posture_cards animate">
+                    {features.map((feature, index) => (
+                      <div key={index} className={`posture_card fade-in-${index + 1}`}>
+                        <div className="posture_card-icon" dangerouslySetInnerHTML={{ __html: feature.icon }}></div>
+                        <div className="posture_card-content">
+                          <h3 className="heading-style-h4">{feature.title}</h3>
+                          <p className="text-size-sm text-color-secondary">{feature.description}</p>
+                        </div>
+                      </div>
+                    ))}
                   </div>
-                </div>
-                {selectedNode && (
-                  <>
-                    <div className="risk-ecosystem-panel-overlay" onClick={() => setSelectedNode(null)}></div>
-                    <div className="risk-ecosystem-panel">
-                      <button className="risk-ecosystem-panel-close" onClick={() => setSelectedNode(null)}>×</button>
-                      <div className="risk-ecosystem-panel-icon" dangerouslySetInnerHTML={{ __html: selectedNode.icon }}></div>
-                      <h3 className="risk-ecosystem-panel-title">{selectedNode.title}</h3>
-                      <p className="risk-ecosystem-panel-description">{selectedNode.description}</p>
+                </>
+              ) : (
+                <>
+                  <div className="posture-layout-desktop-centered">
+                    <div className="posture-heading-centered">
+                      <h2 className="heading-style-h2">Security Options</h2>
                     </div>
-                  </>
-                )}
-              </>
-            )}
+                    <div className="security-pills-grid">
+                      {features.map((feature, index) => (
+                        <div key={index} className="security-pill">
+                          <div className="security-pill-icon" dangerouslySetInnerHTML={{ __html: feature.icon }}></div>
+                          <div className="security-pill-title">{feature.shortTitle}</div>
+                          <div className="security-pill-description">{feature.description}</div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </>
+              )}
+            </div>
           </div>
         </div>
-      </div>
-    </section>
+      </section>
+    </div>
   );
 };
 /**
@@ -2083,10 +1781,10 @@ const useLenisSmoothScroll = () => {
 
         // Base configuration for "resisted" feel
         lenisInstance = new Lenis({
-          lerp: 0.05, // Lower base lerp for heavier/resisted feel (default is usually ~0.1)
+          lerp: 0.08, // Slightly higher for smoother scrolling past sticky sections
           duration: 1.5,
           smoothWheel: true,
-          wheelMultiplier: 0.8, // Slightly lower multiplier for more control
+          wheelMultiplier: 0.9, // Increased for smoother scrolling
           orientation: 'vertical',
           gestureOrientation: 'vertical',
           smoothTouch: false,
@@ -2132,17 +1830,22 @@ const useLenisSmoothScroll = () => {
           // Dynamic resistance and snapping logic
           if (nearestSection) {
             const threshold = viewportHeight * 0.25; // Zone where resistance kicks in
+            const isPostureSection = nearestSection.element.classList.contains('section_posture');
+            
+            // Skip snapping for posture section to prevent freeze when scrolling past
+            const shouldSkipSnap = isPostureSection && Math.abs(velocity) > 0.5;
 
-            if (nearestSection.distance < threshold) {
+            if (nearestSection.distance < threshold && !shouldSkipSnap) {
               // We are near a center... raise the resistance (lower lerp)
-              // 0.05 base -> drops to 0.02 at center
+              // 0.08 base -> drops to 0.04 at center (less aggressive)
               const proximity = 1 - (nearestSection.distance / threshold); // 0 to 1
-              const newLerp = 0.05 - (0.03 * proximity);
-              lenisInstance.options.lerp = Math.max(0.02, newLerp);
+              const newLerp = 0.08 - (0.04 * proximity);
+              lenisInstance.options.lerp = Math.max(0.04, newLerp);
 
               // Gentle Snap Logic
               // Only snap if moving very slowly and very close to center
-              if (Math.abs(velocity) < 0.1 && nearestSection.distance < 50) {
+              // Increased velocity threshold to prevent freezing
+              if (Math.abs(velocity) < 0.05 && nearestSection.distance < 30) {
                 clearTimeout(snapTimeout);
                 snapTimeout = setTimeout(() => {
                   lenisInstance.scrollTo(nearestSection.centerScroll, {
@@ -2155,7 +1858,7 @@ const useLenisSmoothScroll = () => {
               }
             } else {
               // Reset to base resistance
-              lenisInstance.options.lerp = 0.05;
+              lenisInstance.options.lerp = 0.08;
             }
           }
         });
