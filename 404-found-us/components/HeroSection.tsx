@@ -1,11 +1,19 @@
 "use client";
 
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, ArrowDown } from "lucide-react";
 import TextType from "@/components/TextType";
 import Cubes from "@/components/Cubes";
+import {
+  Dialog,
+  DialogContent,
+  DialogTitle,
+} from "@/components/ui/dialog";
 
 export default function HeroSection() {
+  const [isBookingModalOpen, setIsBookingModalOpen] = useState(false);
+
   const handleScrollToWork = () => {
     const target = document.querySelector("#work");
     if (target) {
@@ -38,8 +46,9 @@ export default function HeroSection() {
               <Button
                 size="lg"
                 className="text-base px-8 py-6 rounded-sm hover:opacity-90 transition-opacity"
+                onClick={() => setIsBookingModalOpen(true)}
               >
-                Start a conversation
+                Book a Call
                 <ArrowRight className="ml-2 h-5 w-5" />
               </Button>
             </div>
@@ -69,6 +78,20 @@ export default function HeroSection() {
       >
         <ArrowDown className="h-6 w-6" strokeWidth={2.5} />
       </button>
+
+      <Dialog open={isBookingModalOpen} onOpenChange={setIsBookingModalOpen}>
+        <DialogContent className="max-w-4xl w-full h-[90vh] max-h-[800px] p-0">
+          <DialogTitle className="sr-only">Book a Call</DialogTitle>
+          <div className="w-full h-full">
+            <iframe
+              src="https://api.leadconnectorhq.com/widget/booking/1LpQI79Pb8AqyO7Q04OQ"
+              className="w-full h-full border-0 rounded-lg"
+              title="Book a Call"
+              allow="camera; microphone; geolocation"
+            />
+          </div>
+        </DialogContent>
+      </Dialog>
     </section>
   );
 }

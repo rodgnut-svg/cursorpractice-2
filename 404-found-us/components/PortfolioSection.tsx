@@ -25,6 +25,15 @@ const projects = [
     image: "/portfolio/loft-golf.svg",
     images: [],
   },
+  {
+    title: "Beauty Spa",
+    category: "Wellness & Beauty",
+    description: "Modern medical spa website showcasing premium beauty treatments and wellness services with an elegant, professional design.",
+    year: "2024",
+    websiteUrl: "https://med-spa-demo.vercel.app/",
+    image: "/portfolio/beauty-spa-preview.png",
+    images: [],
+  },
 ];
 
 export default function PortfolioSection() {
@@ -57,7 +66,7 @@ export default function PortfolioSection() {
                 useWindowScroll={false} // Enable Lenis for smooth momentum scroll
               >
                 {projects.map((project, index) => {
-                  const hasLivePreview = index === 0 || index === 1;
+                  const hasLivePreview = index === 0 || index === 1 || index === 2;
 
                   return (
                     <ScrollStackItem
