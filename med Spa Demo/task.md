@@ -1,0 +1,22 @@
+# Tasks
+
+- [/] Initialize Project
+    - [/] Create project directory and install dependencies (React, Vite, Tailwind) <!-- id: 0 -->
+    - [/] Setup Tailwind configuration and CSS variables <!-- id: 1 -->
+- [ ] Analyze References
+    - [/] Extract color palette from ZenTemplate <!-- id: 2 -->
+    - [/] Analyze layout structure from LotusW <!-- id: 3 -->
+- [/] Create Components
+    - [/] Navbar (Sticky, Logo, Links, CTA) <!-- id: 4 -->
+    - [/] Footer (Columns, Newsletter) <!-- id: 5 -->
+    - [/] Hero Section <!-- id: 6 -->
+    - [/] UI Primitives (Buttons, Cards, Inputs) <!-- id: 7 -->
+- [/] Build Pages
+    - [/] Home Page <!-- id: 8 -->
+    - [/] Services Page <!-- id: 9 -->
+    - [/] About Page <!-- id: 10 -->
+    - [/] Results Page <!-- id: 11 -->
+    - [/] Contact Page <!-- id: 12 -->
+- [x] Verify & Polish
+    - [x] Responsive Design Check <!-- id: 13 -->
+    - [x] Micro-interactions and Formatting <!-- id: 14 -->
