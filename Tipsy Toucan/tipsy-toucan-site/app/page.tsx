@@ -101,7 +101,7 @@ export default function Home() {
         <section 
           id="hero" 
           className="tt-section tt-hero tt-section-animate"
-          ref={(el) => (sectionRefs.current[0] = el)}
+          ref={(el) => { sectionRefs.current[0] = el; }}
         >
           <div className="tt-hero-media">
             <Image
@@ -141,7 +141,7 @@ export default function Home() {
         {/* Signature cocktails */}
         <section 
           className="tt-section tt-cocktails tt-section-animate"
-          ref={(el) => (sectionRefs.current[1] = el)}
+          ref={(el) => { sectionRefs.current[1] = el; }}
         >
           <div className="tt-section-inner">
             <div className="tt-section-content tt-cocktails-header">
@@ -220,7 +220,7 @@ export default function Home() {
         <section 
           id="experience" 
           className="tt-section tt-experience tt-section-animate"
-          ref={(el) => (sectionRefs.current[2] = el)}
+          ref={(el) => { sectionRefs.current[2] = el; }}
         >
           <div className="tt-section-inner">
             <div className="tt-section-content tt-experience-copy">
@@ -276,7 +276,7 @@ export default function Home() {
         <section 
           id="about" 
           className="tt-section tt-section-split tt-section-animate"
-          ref={(el) => (sectionRefs.current[3] = el)}
+          ref={(el) => { sectionRefs.current[3] = el; }}
         >
           <div className="tt-section-inner">
             <div className="tt-section-content">
@@ -314,7 +314,7 @@ export default function Home() {
         <section 
           id="services" 
           className="tt-section tt-services tt-section-animate"
-          ref={(el) => (sectionRefs.current[4] = el)}
+          ref={(el) => { sectionRefs.current[4] = el; }}
         >
           <div className="tt-section-inner">
             <div className="tt-section-content">
@@ -372,7 +372,7 @@ export default function Home() {
         {/* Drinks focus */}
         <section 
           className="tt-section tt-drinks tt-section-animate"
-          ref={(el) => (sectionRefs.current[5] = el)}
+          ref={(el) => { sectionRefs.current[5] = el; }}
         >
           <div className="tt-section-inner tt-drinks-inner">
             <div className="tt-section-content">
@@ -399,7 +399,7 @@ export default function Home() {
         <section 
           id="contact" 
           className="tt-section tt-cta tt-section-animate"
-          ref={(el) => (sectionRefs.current[6] = el)}
+          ref={(el) => { sectionRefs.current[6] = el; }}
         >
           <div className="tt-section-inner tt-cta-inner">
             <div className="tt-section-content">
